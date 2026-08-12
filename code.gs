@@ -10,7 +10,7 @@ const META_BOOTSTRAP_PROP = 'metaBootstrapped';
 
 function doGet() {
   return HtmlService
-    .createHtmlOutputFromFile('Index')
+    .createHtmlOutputFromFile('index')
     .setTitle('Nhật ký chi tiêu')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
