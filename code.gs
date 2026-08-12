@@ -1,7 +1,12 @@
 const LOG_SHEET = 'LOG';
+const META_SHEET = 'META';
 const HEADERS = ['ID', 'Thời gian', 'Loại', 'Số tiền', 'Danh mục', 'Nội dung', 'Nguyên văn'];
-const CACHE_KEY = 'transactions_v2';
-const CACHE_SECONDS = 30;
+
+// Bump this whenever migrateSchema_/backfillCategories_ logic changes so it
+// re-runs exactly once for existing sheets, instead of on every request.
+const SCHEMA_VERSION = 'v2-danh-muc';
+const SCHEMA_VERSION_PROP = 'schemaVersion';
+const META_BOOTSTRAP_PROP = 'metaBootstrapped';
 
 function doGet() {
   return HtmlService
@@ -13,6 +18,7 @@ function doGet() {
 
 function setup() {
   const sheet = getOrCreateSheet_();
+  getMetaSheet_();
   return {
     success: true,
     sheet: sheet.getName(),
@@ -26,6 +32,12 @@ function setup() {
  *
  * Legacy schema had an extra "Ngày" column. It is removed because
  * "Thời gian" is the single source of truth for date + time.
+ *
+ * IMPORTANT: this function is called on every addTransaction/
+ * deleteTransaction/updateTransaction/getTransactionsInRange request.
+ * Schema migration scans (and can rewrite) the whole sheet, so it must
+ * only run once — never on the hot path — or every single click in the
+ * app pays for a full-sheet read/write.
  */
 function getOrCreateSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -35,11 +47,24 @@ function getOrCreateSheet_() {
     sheet = ss.insertSheet(LOG_SHEET);
     sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     formatHeader_(sheet);
+    markSchemaUpToDate_();
     return sheet;
   }
 
-  migrateSchema_(sheet);
+  if (!isSchemaUpToDate_()) {
+    migrateSchema_(sheet);
+    markSchemaUpToDate_();
+  }
+
   return sheet;
+}
+
+function isSchemaUpToDate_() {
+  return PropertiesService.getDocumentProperties().getProperty(SCHEMA_VERSION_PROP) === SCHEMA_VERSION;
+}
+
+function markSchemaUpToDate_() {
+  PropertiesService.getDocumentProperties().setProperty(SCHEMA_VERSION_PROP, SCHEMA_VERSION);
 }
 
 function migrateSchema_(sheet) {
@@ -121,6 +146,106 @@ function backfillCategories_(sheet) {
   if (changed) range.setValues(rows);
 }
 
+// ============================================================
+// META sheet: running income/expense/balance totals.
+//
+// Instead of recomputing the balance by scanning every transaction on
+// every request, the totals live in three cells and are nudged by a
+// small delta whenever a transaction is added/edited/deleted — O(1)
+// regardless of how many rows LOG has. Balance is a formula (income -
+// expense) so it can never drift out of sync with the two totals that
+// actually get written.
+// ============================================================
+
+function getMetaSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(META_SHEET);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(META_SHEET);
+    sheet.getRange('A1:B4').setValues([
+      ['Tổng thu (toàn thời gian)', 0],
+      ['Tổng chi (toàn thời gian)', 0],
+      ['Số dư hiện tại', 0],
+      ['Cập nhật lúc', '']
+    ]);
+    sheet.getRange('B3').setFormula('=B1-B2');
+    sheet.getRange('A1:A4').setFontWeight('bold');
+    sheet.setColumnWidth(1, 220);
+    sheet.setColumnWidth(2, 160);
+  }
+
+  if (!isMetaBootstrapped_()) {
+    bootstrapMetaTotals_(sheet);
+    markMetaBootstrapped_();
+  }
+
+  return sheet;
+}
+
+function isMetaBootstrapped_() {
+  return PropertiesService.getDocumentProperties().getProperty(META_BOOTSTRAP_PROP) === '1';
+}
+
+function markMetaBootstrapped_() {
+  PropertiesService.getDocumentProperties().setProperty(META_BOOTSTRAP_PROP, '1');
+}
+
+// One-time full scan (guarded so it only ever runs once) to seed META
+// from whatever rows already exist in LOG at the time this ships.
+function bootstrapMetaTotals_(metaSheet) {
+  const logSheet = getOrCreateSheet_();
+  const lastRow = logSheet.getLastRow();
+
+  let income = 0;
+  let expense = 0;
+
+  if (lastRow >= 2) {
+    // Only the Loại + Số tiền columns are needed to sum totals.
+    const values = logSheet.getRange(2, 3, lastRow - 1, 2).getValues();
+    values.forEach(pair => {
+      const type = pair[0];
+      const amount = Number(pair[1]) || 0;
+      if (type === 'Thu') income += amount; else expense += amount;
+    });
+  }
+
+  metaSheet.getRange('B1').setValue(income);
+  metaSheet.getRange('B2').setValue(expense);
+  metaSheet.getRange('B4').setValue(new Date());
+}
+
+// O(1): reads one cell, writes it back with the delta applied.
+function adjustMetaTotals_(type, amountDelta) {
+  if (!amountDelta) return;
+  const sheet = getMetaSheet_();
+  const cell = sheet.getRange(type === 'Thu' ? 'B1' : 'B2');
+  const current = Number(cell.getValue()) || 0;
+  cell.setValue(current + amountDelta);
+  sheet.getRange('B4').setValue(new Date());
+}
+
+/**
+ * Returns { income, expense, balance } straight from the META cells —
+ * three cell reads, no matter how many rows LOG has. This is what the
+ * "CÒN LẠI" card uses, so the all-time balance is always instantly
+ * available even when the browser has only loaded a single day's worth
+ * of transactions.
+ */
+function getBalance() {
+  const sheet = getMetaSheet_();
+  const values = sheet.getRange('B1:B3').getValues();
+  return {
+    income: Number(values[0][0]) || 0,
+    expense: Number(values[1][0]) || 0,
+    balance: Number(values[2][0]) || 0
+  };
+}
+
+// ============================================================
+// Transaction CRUD
+// ============================================================
+
 function addTransaction(text) {
   if (!text || !String(text).trim()) {
     throw new Error('Bạn chưa nhập nội dung.');
@@ -148,7 +273,7 @@ function addTransaction(text) {
       text
     ]);
 
-    invalidateCache_();
+    adjustMetaTotals_(parsed.type, parsed.amount);
 
     return {
       id: id,
@@ -176,17 +301,102 @@ function deleteTransaction(id) {
     const lastRow = sheet.getLastRow();
     if (lastRow < 2) return { success: false };
 
-    const ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+    // ID, Thời gian, Loại, Số tiền — need type+amount to undo the META totals.
+    const rows = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
 
-    for (let i = 0; i < ids.length; i++) {
-      if (String(ids[i][0]) === String(id)) {
+    for (let i = 0; i < rows.length; i++) {
+      if (String(rows[i][0]) === String(id)) {
+        const type = rows[i][2] || 'Chi';
+        const amount = Number(rows[i][3]) || 0;
+
         sheet.deleteRow(i + 2);
-        invalidateCache_();
+        adjustMetaTotals_(type, -amount);
+
         return { success: true };
       }
     }
 
     return { success: false };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Updates an existing transaction's type/amount/category/note in place.
+ * "Nguyên văn" (the original raw text) is preserved untouched so the
+ * edit history of what the user actually typed is never lost.
+ */
+function updateTransaction(id, updates) {
+  if (!id) throw new Error('Thiếu mã giao dịch.');
+  updates = updates || {};
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) {
+    throw new Error('Hệ thống đang bận, thử lại sau ít giây.');
+  }
+
+  try {
+    const sheet = getOrCreateSheet_();
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) throw new Error('Không tìm thấy giao dịch.');
+
+    const rows = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
+
+    for (let i = 0; i < rows.length; i++) {
+      if (String(rows[i][0]) !== String(id)) continue;
+
+      const row = i + 2;
+      const oldType = rows[i][2] || 'Chi';
+      const oldAmount = Number(rows[i][3]) || 0;
+
+      if (updates.type === 'Thu' || updates.type === 'Chi') {
+        sheet.getRange(row, 3).setValue(updates.type);
+      }
+
+      let newAmount = oldAmount;
+      if (updates.amount !== undefined && updates.amount !== null && updates.amount !== '') {
+        const amount = Number(updates.amount);
+        if (!isFinite(amount) || amount <= 0) {
+          throw new Error('Số tiền không hợp lệ.');
+        }
+        newAmount = Math.round(amount);
+        sheet.getRange(row, 4).setValue(newAmount);
+      }
+
+      if (updates.category) {
+        sheet.getRange(row, 5).setValue(String(updates.category).trim());
+      }
+
+      if (updates.note !== undefined) {
+        const note = String(updates.note).trim();
+        if (!note) throw new Error('Nội dung không được để trống.');
+        sheet.getRange(row, 6).setValue(note);
+      }
+
+      const newType = (updates.type === 'Thu' || updates.type === 'Chi') ? updates.type : oldType;
+
+      if (oldType === newType) {
+        adjustMetaTotals_(oldType, newAmount - oldAmount);
+      } else {
+        adjustMetaTotals_(oldType, -oldAmount);
+        adjustMetaTotals_(newType, newAmount);
+      }
+
+      const values = sheet.getRange(row, 1, 1, HEADERS.length).getValues()[0];
+      const date = values[1] ? new Date(values[1]) : null;
+
+      return {
+        id: values[0] || null,
+        timestamp: date && !isNaN(date.getTime()) ? date.toISOString() : null,
+        type: values[2] || 'Chi',
+        amount: Number(values[3]) || 0,
+        category: values[4] || 'Khác',
+        note: values[5] || ''
+      };
+    }
+
+    throw new Error('Không tìm thấy giao dịch.');
   } finally {
     lock.releaseLock();
   }
@@ -305,95 +515,147 @@ function detectCategory_(note, type) {
   return 'Khác';
 }
 
-function getTransactions() {
-  const cache = CacheService.getScriptCache();
-  const cached = cache.get(CACHE_KEY);
+// ============================================================
+// Range-scoped reads
+//
+// LOG rows are always appended in chronological order (appendRow), so
+// column B (Thời gian) is non-decreasing top to bottom. That means the
+// start/end row of any date range can be located with a binary search —
+// O(log n) sheet reads — instead of scanning every row to find matches.
+// Only the located slice is then read in full. This is what lets the
+// frontend load "just today", "just this month", etc. at roughly
+// constant cost regardless of how many years of history the sheet holds.
+// ============================================================
 
-  if (cached) return JSON.parse(cached);
+/**
+ * Returns the 0-based data-row index (0 = first data row) of the first
+ * row whose timestamp is >= targetDate.
+ */
+function locateBoundaryRow_(sheet, totalDataRows, targetDate) {
+  if (totalDataRows <= 0) return 0;
 
-  const sheet = getOrCreateSheet_();
-  const lastRow = sheet.getLastRow();
+  let lo = 0;
+  let hi = totalDataRows;
 
-  if (lastRow < 2) return [];
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    const raw = sheet.getRange(2 + mid, 2).getValue();
+    const d = raw ? new Date(raw) : null;
+    const valid = d && !isNaN(d.getTime());
 
-  const values = sheet
-    .getRange(2, 1, lastRow - 1, HEADERS.length)
-    .getValues();
+    if (!valid || d < targetDate) {
+      lo = mid + 1;
+    } else {
+      hi = mid;
+    }
+  }
 
-  const result = values
+  return lo;
+}
+
+function rowsToTransactions_(values) {
+  return values
     .map(row => {
       const date = row[1] ? new Date(row[1]) : null;
-
+      if (!date || isNaN(date.getTime())) return null;
       return {
         id: row[0] || null,
-        timestamp: date && !isNaN(date.getTime()) ? date.toISOString() : null,
+        timestamp: date.toISOString(),
         type: row[2] || 'Chi',
         amount: Number(row[3]) || 0,
         category: row[4] || detectCategory_(row[5], row[2]),
-        note: row[5] || '',
-        original: row[6] || ''
+        note: row[5] || ''
       };
     })
-    .filter(item => item.id && item.timestamp);
-
-  try {
-    cache.put(CACHE_KEY, JSON.stringify(result), CACHE_SECONDS);
-  } catch (e) {
-    // Cache is optional; large datasets can exceed Apps Script limits.
-  }
-
-  return result;
+    .filter(item => item && item.id);
 }
 
-function getStatistics() {
-  return buildStatistics_(getTransactions());
+/**
+ * Fetches only the transactions whose timestamp falls in [startIso, endIso).
+ * Either bound may be null/omitted for an open end. This is the main
+ * entry point the frontend uses for every period filter (today, this
+ * week, a picked month, a custom date range) — it never reads more of
+ * the sheet than the requested window actually spans.
+ */
+function getTransactionsInRange(startIso, endIso) {
+  const sheet = getOrCreateSheet_();
+  const lastRow = sheet.getLastRow();
+  const totalDataRows = Math.max(0, lastRow - 1);
+  if (totalDataRows === 0) return [];
+
+  const start = startIso ? new Date(startIso) : null;
+  const end = endIso ? new Date(endIso) : null;
+
+  const fromIdx = start ? locateBoundaryRow_(sheet, totalDataRows, start) : 0;
+  const toIdx = end ? locateBoundaryRow_(sheet, totalDataRows, end) : totalDataRows;
+
+  if (toIdx <= fromIdx) return [];
+
+  const startRow = 2 + fromIdx;
+  const rowCount = toIdx - fromIdx;
+
+  const values = sheet.getRange(startRow, 1, rowCount, HEADERS.length).getValues();
+  return rowsToTransactions_(values);
 }
 
-function buildStatistics_(transactions) {
-  const expenseByCategory = {};
-  const incomeByCategory = {};
-  const daily = {};
+/**
+ * Same range-location strategy as getTransactionsInRange, but only sums
+ * income/expense instead of returning full rows — used for the "so với
+ * kỳ trước" comparison, where a scalar is all that's needed.
+ */
+function getExpenseSumInRange(startIso, endIso) {
+  const sheet = getOrCreateSheet_();
+  const lastRow = sheet.getLastRow();
+  const totalDataRows = Math.max(0, lastRow - 1);
+  if (totalDataRows === 0) return { income: 0, expense: 0 };
+
+  const start = startIso ? new Date(startIso) : null;
+  const end = endIso ? new Date(endIso) : null;
+
+  const fromIdx = start ? locateBoundaryRow_(sheet, totalDataRows, start) : 0;
+  const toIdx = end ? locateBoundaryRow_(sheet, totalDataRows, end) : totalDataRows;
+
+  if (toIdx <= fromIdx) return { income: 0, expense: 0 };
+
+  const startRow = 2 + fromIdx;
+  const rowCount = toIdx - fromIdx;
+
+  // Only Loại + Số tiền are needed to sum.
+  const values = sheet.getRange(startRow, 3, rowCount, 2).getValues();
 
   let income = 0;
   let expense = 0;
-
-  transactions.forEach(item => {
-    const amount = Number(item.amount) || 0;
-    const category = item.category || 'Khác';
-    const date = new Date(item.timestamp);
-
-    if (item.type === 'Thu') {
-      income += amount;
-      incomeByCategory[category] = (incomeByCategory[category] || 0) + amount;
-    } else {
-      expense += amount;
-      expenseByCategory[category] = (expenseByCategory[category] || 0) + amount;
-    }
-
-    if (!isNaN(date.getTime())) {
-      const key = Utilities.formatDate(
-        date,
-        Session.getScriptTimeZone(),
-        'yyyy-MM-dd'
-      );
-
-      if (!daily[key]) daily[key] = { income: 0, expense: 0 };
-      if (item.type === 'Thu') daily[key].income += amount;
-      else daily[key].expense += amount;
-    }
+  values.forEach(pair => {
+    const type = pair[0];
+    const amount = Number(pair[1]) || 0;
+    if (type === 'Thu') income += amount; else expense += amount;
   });
 
-  return {
-    income: income,
-    expense: expense,
-    balance: income - expense,
-    transactionCount: transactions.length,
-    expenseByCategory: expenseByCategory,
-    incomeByCategory: incomeByCategory,
-    daily: daily
-  };
+  return { income: income, expense: expense };
 }
 
-function invalidateCache_() {
-  CacheService.getScriptCache().remove(CACHE_KEY);
+/**
+ * Reads one fixed-size slice of the sheet by row offset, for the "Tất cả"
+ * (all time) view. Even with range-scoped reads for normal filters, "all"
+ * has no bound to binary-search against — it always means every row — so
+ * it's still pulled in chunks rather than one giant request, keeping any
+ * single call small regardless of how large the log has grown.
+ */
+function getTransactionsChunk(offset, limit) {
+  offset = Math.max(0, Number(offset) || 0);
+  limit = Math.max(1, Number(limit) || 3000);
+
+  const sheet = getOrCreateSheet_();
+  const lastRow = sheet.getLastRow();
+  const totalDataRows = Math.max(0, lastRow - 1);
+
+  if (offset >= totalDataRows) {
+    return { rows: [], total: totalDataRows };
+  }
+
+  const startRow = 2 + offset;
+  const rowsToRead = Math.min(limit, totalDataRows - offset);
+
+  const values = sheet.getRange(startRow, 1, rowsToRead, HEADERS.length).getValues();
+  return { rows: rowsToTransactions_(values), total: totalDataRows };
 }
