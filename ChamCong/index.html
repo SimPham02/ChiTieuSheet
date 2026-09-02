@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chấm Công & Lịch Đi Làm</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      --surface: #1e293b;
+      --surface-card: rgba(30, 41, 59, 0.75);
+      --surface-hover: rgba(51, 65, 85, 0.85);
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --surface-border-strong: rgba(255, 255, 255, 0.16);
+      
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      
+      --work: #10b981;
+      --work-bg: rgba(16, 185, 129, 0.14);
+      --work-border: rgba(16, 185, 129, 0.35);
+      
+      --ot: #f59e0b;
+      --ot-bg: rgba(245, 158, 11, 0.14);
+      --ot-border: rgba(245, 158, 11, 0.35);
+      
+      --leave: #ef4444;
+      --leave-bg: rgba(239, 68, 68, 0.14);
+      --leave-border: rgba(239, 68, 68, 0.35);
+      
+      --half: #06b6d4;
+      --half-bg: rgba(6, 182, 212, 0.14);
+      --half-border: rgba(6, 182, 212, 0.35);
+
+      --holiday: #8b5cf6;
+      --holiday-bg: rgba(139, 92, 246, 0.14);
+      --holiday-border: rgba(139, 92, 246, 0.35);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 25px rgba(59, 130, 246, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      background-image: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    /* CONTAINER */
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+      color: white;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .work-schedule-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      color: #93c5fd;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      margin-top: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #60a5fa 0%, #1d4ed8 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--surface-border-strong);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-icon {
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--surface-border);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+    }
+
+    .btn-icon:hover {
+      background: var(--surface-hover);
+      border-color: var(--surface-border-strong);
+      color: var(--primary);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--surface-border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .status-dot.syncing {
+      background: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    /* SUMMARY CARDS */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--surface-border-strong);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .stat-card.work::before { background: linear-gradient(90deg, #10b981, #059669); }
+    .stat-card.ot::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .stat-card.leave::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .stat-card.rate::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-card.work .stat-icon { background: var(--work-bg); color: var(--work); }
+    .stat-card.ot .stat-icon { background: var(--ot-bg); color: var(--ot); }
+    .stat-card.leave .stat-icon { background: var(--leave-bg); color: var(--leave); }
+    .stat-card.rate .stat-icon { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .stat-unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .stat-sub {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .progress-bar-bg {
+      margin-top: 10px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: #3b82f6;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* CONTROLS & VIEWS TOOLBAR */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .month-title {
+      font-size: 18px;
+      font-weight: 700;
+      min-width: 170px;
+      text-align: center;
+    }
+
+    .nav-arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--surface-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--primary);
+    }
+
+    .view-toggle {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--surface-border);
+    }
+
+    .view-btn {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: gap;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn.active {
+      background: var(--surface);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* CALENDAR GRID */
+    .calendar-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .weekday-col {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 8px 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .weekday-col.weekend {
+      color: #f43f5e;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .day-cell {
+      min-height: 115px;
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .day-cell:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      z-index: 2;
+    }
+
+    .day-cell.other-month {
+      opacity: 0.25;
+      cursor: default;
+      background: rgba(15, 23, 42, 0.3);
+    }
+
+    .day-cell.other-month:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--surface-border);
+    }
+
+    .day-cell.today {
+      border: 1.5px solid var(--primary);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .day-cell.weekend {
+      background: rgba(30, 41, 59, 0.25);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .day-number {
+      font-size: 14px;
+      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-full);
+      color: var(--text);
+    }
+
+    .day-cell.today .day-number {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .day-quick-add {
+      opacity: 0;
+      font-size: 11px;
+      color: var(--text-dim);
+      transition: opacity 0.15s ease;
+    }
+
+    .day-cell:hover .day-quick-add {
+      opacity: 1;
+    }
+
+    .day-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 6px;
+      line-height: 1.2;
+      width: fit-content;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge-work {
+      background: var(--work-bg);
+      color: #34d399;
+      border: 1px solid var(--work-border);
+    }
+
+    .badge-half {
+      background: var(--half-bg);
+      color: #22d3ee;
+      border: 1px solid var(--half-border);
+    }
+
+    .badge-ot {
+      background: var(--ot-bg);
+      color: #fbbf24;
+      border: 1px solid var(--ot-border);
+    }
+
+    .badge-leave {
+      background: var(--leave-bg);
+      color: #f87171;
+      border: 1px solid var(--leave-border);
+    }
+
+    .badge-holiday {
+      background: var(--holiday-bg);
+      color: #c084fc;
+      border: 1px solid var(--holiday-border);
+    }
+
+    .day-note-preview {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-style: italic;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* TABLE LOG VIEW */
+    .table-view-container {
+      display: none;
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+    }
+
+    .table-view-container.active {
+      display: block;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    .log-table th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--surface-border-strong);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .log-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--surface-border);
+      color: var(--text);
+    }
+
+    .log-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: #1e293b;
+      border: 1px solid var(--surface-border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.94) translateY(10px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .modal-body {
+      padding: 22px;
+      max-height: calc(85vh - 120px);
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* STATUS SELECTOR PILLS */
+    .status-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .status-opt-btn {
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--surface-border);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+
+    .status-opt-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--surface-border-strong);
+    }
+
+    .status-opt-btn.active.work {
+      background: var(--work-bg);
+      border-color: var(--work);
+      color: #34d399;
+    }
+
+    .status-opt-btn.active.half {
+      background: var(--half-bg);
+      border-color: var(--half);
+      color: #22d3ee;
+    }
+
+    .status-opt-btn.active.ot {
+      background: var(--ot-bg);
+      border-color: var(--ot);
+      color: #fbbf24;
+    }
+
+    .status-opt-btn.active.leave {
+      background: var(--leave-bg);
+      border-color: var(--leave);
+      color: #f87171;
+    }
+
+    .status-opt-btn.active.unpaid {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: #f43f5e;
+      color: #fb7185;
+    }
+
+    .status-opt-btn.active.holiday {
+      background: var(--holiday-bg);
+      border-color: var(--holiday);
+      color: #c084fc;
+    }
+
+    /* OT PRESETS */
+    .ot-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .preset-chip {
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--surface-border);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .preset-chip:hover, .preset-chip.active {
+      background: var(--ot-bg);
+      border-color: var(--ot);
+      color: #fbbf24;
+    }
+
+    .preset-chip.featured {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+    }
+
+    /* INPUTS */
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--surface-border-strong);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-footer {
+      padding: 16px 22px;
+      border-top: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .modal-footer-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 18px;
+      background: #1e293b;
+      border: 1px solid var(--surface-border-strong);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast.success { border-left: 4px solid #10b981; }
+    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.info { border-left: 4px solid #3b82f6; }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 16px 10px 30px;
+      }
+      .brand-title {
+        font-size: 19px;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .stat-card {
+        padding: 14px 15px;
+      }
+      .stat-value {
+        font-size: 24px;
+      }
+      .day-cell {
+        min-height: 85px;
+        padding: 5px 6px;
+      }
+      .day-number {
+        font-size: 12px;
+        width: 22px;
+        height: 22px;
+      }
+      .badge {
+        font-size: 9.5px;
+        padding: 2px 4px;
+      }
+      .day-note-preview {
+        font-size: 9.5px;
+        -webkit-line-clamp: 1;
+      }
+      .status-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .month-nav {
+        justify-content: space-between;
+      }
+      .month-title {
+        min-width: unset;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .calendar-weekdays .weekday-col {
+        font-size: 11px;
+        padding: 4px 2px;
+      }
+      .day-cell {
+        min-height: 70px;
+        border-radius: var(--radius-sm);
+      }
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Chấm Công & Lịch Đi Làm</h1>
+          <div class="work-schedule-badge">
+            <span>⏱️ 08:00 - 17:00 (Chuẩn) | OT: đến 20:00 (3h)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-pill" id="syncStatus">
+          <span class="status-dot" id="syncDot"></span>
+          <span id="syncText">Đã kết nối</span>
+        </div>
+        <button class="btn btn-secondary" id="btnBatchMonth" title="Tự động điền Đi làm (08:00 - 17:00) cho các ngày từ T2 đến T6 trong tháng">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Chấm nhanh T2-T6
+        </button>
+        <button class="btn btn-primary" id="btnTodayModal">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Chấm công hôm nay
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI SUMMARY CARDS -->
+    <section class="summary-grid">
+      <!-- CÔNG ĐI LÀM -->
+      <div class="stat-card work">
+        <div class="stat-header">
+          <span class="stat-label">Tổng số công</span>
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value">
+          <span id="statWorkUnits">0.0</span>
+          <span class="stat-unit">công</span>
+        </div>
+        <div class="stat-sub">Đã đi làm <b id="statWorkDays">0</b> ngày thực tế</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressWork" style="background: #10b981;"></div>
+        </div>
+      </div>
+
+      <!-- TỔNG GIỜ OT -->
+      <div class="stat-card ot">
+        <div class="stat-header">
+          <span class="stat-label">Tăng ca (OT)</span>
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value">
+          <span id="statOtHours">0.0</span>
+          <span class="stat-unit">giờ</span>
+        </div>
+        <div class="stat-sub">Có <b id="statOtDays">0</b> ngày tăng ca trong tháng</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressOt" style="background: #f59e0b;"></div>
+        </div>
+      </div>
+
+      <!-- SỐ NGÀY NGHỈ -->
+      <div class="stat-card leave">
+        <div class="stat-header">
+          <span class="stat-label">Ngày nghỉ</span>
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value">
+          <span id="statLeaveDays">0</span>
+          <span class="stat-unit">ngày</span>
+        </div>
+        <div class="stat-sub">Nghỉ phép: <span id="statPaidLeave">0</span> | Không lương: <span id="statUnpaidLeave">0</span></div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressLeave" style="background: #ef4444;"></div>
+        </div>
+      </div>
+
+      <!-- CHUYÊN CẦN / ĐÁNH GIÁ -->
+      <div class="stat-card rate">
+        <div class="stat-header">
+          <span class="stat-label">Độ hoàn thành</span>
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value">
+          <span id="statRate">0%</span>
+          <span class="stat-unit">/ 22 công</span>
+        </div>
+        <div class="stat-sub" id="statRateEvaluation">Đang cập nhật...</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressRate" style="background: #3b82f6;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLBAR & VIEW CONTROLS -->
+    <div class="toolbar">
+      <div class="month-nav">
+        <button class="nav-arrow" id="btnPrevMonth" title="Tháng trước">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div class="month-title" id="monthTitle">Tháng 09 / 2026</div>
+        <button class="nav-arrow" id="btnNextMonth" title="Tháng sau">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <button class="btn btn-secondary" style="padding: 7px 12px; font-size: 12px;" id="btnCurrentMonth">
+          Tháng này
+        </button>
+      </div>
+
+      <div class="toolbar-actions">
+        <div class="view-toggle">
+          <button class="view-btn active" id="viewBtnCalendar">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Lịch tháng
+          </button>
+          <button class="view-btn" id="viewBtnTable">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            Danh sách
+          </button>
+        </div>
+        <button class="btn-icon" id="btnExportCSV" title="Xuất dữ liệu CSV">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CALENDAR VIEW -->
+    <main class="calendar-card" id="calendarView">
+      <div class="calendar-weekdays">
+        <div class="weekday-col">Thứ 2</div>
+        <div class="weekday-col">Thứ 3</div>
+        <div class="weekday-col">Thứ 4</div>
+        <div class="weekday-col">Thứ 5</div>
+        <div class="weekday-col">Thứ 6</div>
+        <div class="weekday-col weekend">Thứ 7</div>
+        <div class="weekday-col weekend">Chủ Nhật</div>
+      </div>
+      <div class="calendar-days" id="calendarDaysGrid">
+        <!-- Rendered by Javascript -->
+      </div>
+    </main>
+
+    <!-- TABLE LOG VIEW -->
+    <div class="table-view-container" id="tableView">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Thứ</th>
+            <th>Trạng thái</th>
+            <th>Số công</th>
+            <th>Giờ OT</th>
+            <th>Giờ làm việc</th>
+            <th>Ghi chú (Note)</th>
+            <th style="text-align: right;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rendered by Javascript -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- MODAL CHẤM CÔNG & NOTE -->
+  <div class="modal-overlay" id="entryModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="modalDateTitle">Chấm công ngày 02/09/2026</h3>
+          <p class="modal-subtitle" id="modalDayOfWeek">Thứ Tư</p>
+        </div>
+        <button class="modal-close" id="btnCloseModal">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="attendanceForm" onsubmit="return false;">
+        <div class="modal-body">
+          <input type="hidden" id="formDateKey" value="">
+
+          <!-- TRẠNG THÁI -->
+          <div class="form-group">
+            <label class="form-label">Trạng thái làm việc</label>
+            <div class="status-options" id="statusPillsGroup">
+              <button type="button" class="status-opt-btn active work" data-status="Đi làm" data-work="1" data-ot="0" data-in="08:00" data-out="17:00">
+                <span>🟢 Đi làm</span>
+                <small style="opacity:0.85">08:00 - 17:00 (1c)</small>
+              </button>
+              <button type="button" class="status-opt-btn ot" data-status="OT" data-work="1" data-ot="3" data-in="08:00" data-out="20:00">
+                <span>🟠 Làm + OT</span>
+                <small style="opacity:0.85">Đến 20:00 (+3h)</small>
+              </button>
+              <button type="button" class="status-opt-btn half" data-status="Nửa ngày" data-work="0.5" data-ot="0" data-in="08:00" data-out="12:00">
+                <span>🟡 Nửa ngày</span>
+                <small style="opacity:0.85">08:00 - 12:00 (0.5c)</small>
+              </button>
+              <button type="button" class="status-opt-btn leave" data-status="Nghỉ phép" data-work="0" data-ot="0" data-in="" data-out="">
+                <span>🔴 Nghỉ phép</span>
+                <small style="opacity:0.85">Có phép</small>
+              </button>
+              <button type="button" class="status-opt-btn unpaid" data-status="Nghỉ không lương" data-work="0" data-ot="0" data-in="" data-out="">
+                <span>⚪ Nghỉ KL</span>
+                <small style="opacity:0.85">Không lương</small>
+              </button>
+              <button type="button" class="status-opt-btn holiday" data-status="Nghỉ lễ" data-work="0" data-ot="0" data-in="" data-out="">
+                <span>🔵 Nghỉ lễ / Tuần</span>
+                <small style="opacity:0.85">0 công</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- SỐ CÔNG & GIỜ OT -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="formWorkUnits">Số công</label>
+              <input type="number" step="0.1" min="0" max="2" class="form-input" id="formWorkUnits" value="1.0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="formOtHours">Giờ tăng ca (OT)</label>
+              <input type="number" step="0.5" min="0" max="24" class="form-input" id="formOtHours" value="0" placeholder="0">
+              <div class="ot-presets">
+                <span class="preset-chip" onclick="setOtPreset(1, '18:00')">+1h (18h)</span>
+                <span class="preset-chip" onclick="setOtPreset(2, '19:00')">+2h (19h)</span>
+                <span class="preset-chip featured" onclick="setOtPreset(3, '20:00')">+3h (20h Mặc định)</span>
+                <span class="preset-chip" onclick="setOtPreset(4, '21:00')">+4h (21h)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GIỜ VÀO & GIỜ RA (Tùy chọn) -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="formCheckIn">Giờ vào (Check-in)</label>
+              <input type="time" class="form-input" id="formCheckIn" value="08:00">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="formCheckOut">Giờ ra (Check-out)</label>
+              <input type="time" class="form-input" id="formCheckOut" value="17:00">
+            </div>
+          </div>
+
+          <!-- NOTE / GHI CHÚ -->
+          <div class="form-group">
+            <label class="form-label" for="formNote">
+              <span>Ghi chú công việc / Tình hình trong ngày</span>
+            </label>
+            <textarea class="form-textarea" id="formNote" rows="3" placeholder="Ví dụ: Họp khách hàng, fix xong bug sprint, tăng ca đẩy tiến độ..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnDeleteEntry">Xóa ngày này</button>
+          <div class="modal-footer-actions">
+            <button type="button" class="btn btn-secondary" id="btnCancelModal">Hủy</button>
+            <button type="button" class="btn btn-primary" id="btnSaveModal">Lưu chấm công</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    /**
+     * ============================================================
+     * STATE MANAGEMENT & CONFIG
+     * ============================================================
+     */
+    const state = {
+      currentYear: new Date().getFullYear(),
+      currentMonth: new Date().getMonth() + 1, // 1 - 12
+      activeView: 'calendar', // 'calendar' | 'table'
+      records: {}, // Key: YYYY-MM-DD -> Record Object
+      standardWorkUnits: 22, // Công chuẩn tháng
+      defaultCheckIn: '08:00',
+      defaultCheckOut: '17:00',
+      defaultOtCheckOut: '20:00',
+      defaultOtHours: 3,
+      isLoading: false,
+      isGAS: typeof google !== 'undefined' && google.script && google.script.run
+    };
+
+    const VN_DAYS = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+    // Local Storage Mock Key
+    const STORAGE_KEY = 'chamcong_app_records_v1';
+
+    /**
+     * ============================================================
+     * INITIALIZATION
+     * ============================================================
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      initEventListeners();
+      updateSyncStatus(state.isGAS ? 'Google Sheet' : 'Local Demo (Offline)', false);
+      loadMonthData(state.currentYear, state.currentMonth);
+    });
+
+    function initEventListeners() {
+      // Month navigation
+      document.getElementById('btnPrevMonth').addEventListener('click', () => changeMonth(-1));
+      document.getElementById('btnNextMonth').addEventListener('click', () => changeMonth(1));
+      document.getElementById('btnCurrentMonth').addEventListener('click', () => {
+        const now = new Date();
+        state.currentYear = now.getFullYear();
+        state.currentMonth = now.getMonth() + 1;
+        loadMonthData(state.currentYear, state.currentMonth);
+      });
+
+      // View toggle
+      document.getElementById('viewBtnCalendar').addEventListener('click', () => switchView('calendar'));
+      document.getElementById('viewBtnTable').addEventListener('click', () => switchView('table'));
+
+      // Quick action: Today modal
+      document.getElementById('btnTodayModal').addEventListener('click', () => {
+        const todayStr = getTodayDateStr();
+        openEditModal(todayStr);
+      });
+
+      // Quick action: Batch month fill T2-T6
+      document.getElementById('btnBatchMonth').addEventListener('click', handleBatchFillMonth);
+
+      // Export CSV
+      document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
+
+      // Modal buttons
+      document.getElementById('btnCloseModal').addEventListener('click', closeEditModal);
+      document.getElementById('btnCancelModal').addEventListener('click', closeEditModal);
+      document.getElementById('btnSaveModal').addEventListener('click', handleSaveEntry);
+      document.getElementById('btnDeleteEntry').addEventListener('click', handleDeleteEntry);
+
+      // Modal backdrop click
+      document.getElementById('entryModal').addEventListener('click', (e) => {
+        if (e.target.id === 'entryModal') closeEditModal();
+      });
+
+      // Status pill buttons in modal
+      const statusPills = document.querySelectorAll('#statusPillsGroup .status-opt-btn');
+      statusPills.forEach(btn => {
+        btn.addEventListener('click', () => {
+          statusPills.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const workVal = btn.dataset.work;
+          const otVal = btn.dataset.ot;
+          const inVal = btn.dataset.in;
+          const outVal = btn.dataset.out;
+
+          if (workVal !== undefined) document.getElementById('formWorkUnits').value = workVal;
+          if (otVal !== undefined) document.getElementById('formOtHours').value = otVal;
+          if (inVal !== undefined) document.getElementById('formCheckIn').value = inVal;
+          if (outVal !== undefined) document.getElementById('formCheckOut').value = outVal;
+        });
+      });
+    }
+
+    /**
+     * ============================================================
+     * DATE HELPERS
+     * ============================================================
+     */
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function formatDateKey(y, m, d) {
+      return `${y}-${pad2(m)}-${pad2(d)}`;
+    }
+
+    function getTodayDateStr() {
+      const now = new Date();
+      return formatDateKey(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    }
+
+    function getDayOfWeekName(dateStr) {
+      const p = dateStr.split('-');
+      const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+      return VN_DAYS[d.getDay()];
+    }
+
+    function changeMonth(delta) {
+      let m = state.currentMonth + delta;
+      let y = state.currentYear;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      } else if (m < 1) {
+        m = 12;
+        y -= 1;
+      }
+      state.currentYear = y;
+      state.currentMonth = m;
+      loadMonthData(y, m);
+    }
+
+    function switchView(viewName) {
+      state.activeView = viewName;
+      if (viewName === 'calendar') {
+        document.getElementById('viewBtnCalendar').classList.add('active');
+        document.getElementById('viewBtnTable').classList.remove('active');
+        document.getElementById('calendarView').style.display = 'block';
+        document.getElementById('tableView').classList.remove('active');
+      } else {
+        document.getElementById('viewBtnTable').classList.add('active');
+        document.getElementById('viewBtnCalendar').classList.remove('active');
+        document.getElementById('calendarView').style.display = 'none';
+        document.getElementById('tableView').classList.add('active');
+        renderTableView();
+      }
+    }
+
+    /**
+     * ============================================================
+     * DATA LOADING & SYNC
+     * ============================================================
+     */
+    function loadMonthData(year, month) {
+      updateMonthTitle(year, month);
+      updateSyncStatus('Đang tải dữ liệu...', true);
+
+      if (state.isGAS) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            if (res && res.success) {
+              state.records = res.records || {};
+              updateSyncStatus('Đã kết nối Google Sheet', false);
+              renderCalendarGrid();
+              if (state.activeView === 'table') renderTableView();
+              updateKPIs(res.summary);
+            } else {
+              showToast('Lỗi khi tải dữ liệu: ' + (res ? res.error : 'Không rõ'), 'error');
+              updateSyncStatus('Lỗi đồng bộ', false);
+            }
+          })
+          .withFailureHandler((err) => {
+            showToast('Lỗi kết nối: ' + err.message, 'error');
+            updateSyncStatus('Mất kết nối', false);
+          })
+          .getMonthAttendance(year, month);
+      } else {
+        // LocalStorage Mock mode
+        setTimeout(() => {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          let allRecords = {};
+          if (stored) {
+            try { allRecords = JSON.parse(stored); } catch (e) {}
+          } else {
+            // Seed default mock records for current month
+            allRecords = generateInitialMockData(year, month);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecords));
+          }
+
+          const prefix = `${year}-${pad2(month)}`;
+          const filtered = {};
+          Object.keys(allRecords).forEach(k => {
+            if (k.startsWith(prefix)) {
+              filtered[k] = allRecords[k];
+            }
+          });
+
+          state.records = filtered;
+          updateSyncStatus('Chế độ Local Mock', false);
+          renderCalendarGrid();
+          if (state.activeView === 'table') renderTableView();
+          computeAndRenderLocalKPIs();
+        }, 150);
+      }
+    }
+
+    function generateInitialMockData(year, month) {
+      const mock = {};
+      const daysInMonth = new Date(year, month, 0).getDate();
+      for (let d = 1; d <= Math.min(daysInMonth, 15); d++) {
+        const dateStr = formatDateKey(year, month, d);
+        const dayOfWeek = getDayOfWeekName(dateStr);
+        if (dayOfWeek !== 'Thứ Bảy' && dayOfWeek !== 'Chủ Nhật') {
+          if (d === 3) {
+            mock[dateStr] = { id: `cc_${dateStr}`, date: dateStr, dayOfWeek, status: 'OT', workUnits: 1, otHours: 3, checkIn: '08:00', checkOut: '20:00', note: 'Tăng ca hoàn thành sprint', updatedAt: '03/09/2026' };
+          } else if (d === 8) {
+            mock[dateStr] = { id: `cc_${dateStr}`, date: dateStr, dayOfWeek, status: 'Nghỉ phép', workUnits: 0, otHours: 0, checkIn: '', checkOut: '', note: 'Nghỉ việc gia đình', updatedAt: '08/09/2026' };
+          } else {
+            mock[dateStr] = { id: `cc_${dateStr}`, date: dateStr, dayOfWeek, status: 'Đi làm', workUnits: 1, otHours: 0, checkIn: '08:00', checkOut: '17:00', note: '', updatedAt: `${d}/${month}/${year}` };
+          }
+        }
+      }
+      return mock;
+    }
+
+    function updateMonthTitle(year, month) {
+      document.getElementById('monthTitle').textContent = `Tháng ${pad2(month)} / ${year}`;
+    }
+
+    function updateSyncStatus(text, isSyncing) {
+      document.getElementById('syncText').textContent = text;
+      const dot = document.getElementById('syncDot');
+      if (isSyncing) {
+        dot.classList.add('syncing');
+      } else {
+        dot.classList.remove('syncing');
+      }
+    }
+
+    /**
+     * ============================================================
+     * RENDER CALENDAR
+     * ============================================================
+     */
+    function renderCalendarGrid() {
+      const grid = document.getElementById('calendarDaysGrid');
+      grid.innerHTML = '';
+
+      const y = state.currentYear;
+      const m = state.currentMonth;
+      const todayStr = getTodayDateStr();
+
+      // First day of month
+      const firstDate = new Date(y, m - 1, 1);
+      let firstDayIndex = firstDate.getDay(); // 0 is Sunday, 1 is Mon...
+      let startOffset = (firstDayIndex === 0 ? 6 : firstDayIndex - 1);
+
+      const daysInMonth = new Date(y, m, 0).getDate();
+      const prevMonthDays = new Date(y, m - 1, 0).getDate();
+
+      // 1. Render trailing days from previous month
+      for (let i = startOffset - 1; i >= 0; i--) {
+        const prevDayNum = prevMonthDays - i;
+        const cell = document.createElement('div');
+        cell.className = 'day-cell other-month';
+        cell.innerHTML = `
+          <div class="day-header">
+            <span class="day-number">${prevDayNum}</span>
+          </div>
+        `;
+        grid.appendChild(cell);
+      }
+
+      // 2. Render current month days
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = formatDateKey(y, m, d);
+        const record = state.records[dateStr];
+        const dayDate = new Date(y, m - 1, d);
+        const dayOfWeekIndex = dayDate.getDay();
+        const isWeekend = (dayOfWeekIndex === 0 || dayOfWeekIndex === 6);
+        const isToday = (dateStr === todayStr);
+
+        const cell = document.createElement('div');
+        cell.className = `day-cell ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}`;
+        cell.onclick = () => openEditModal(dateStr);
+
+        let badgesHtml = '';
+        let noteHtml = '';
+
+        if (record) {
+          const status = record.status || 'Đi làm';
+          if (status === 'Đi làm') {
+            badgesHtml += `<span class="badge badge-work">🟢 Đi làm (${record.workUnits || 1}c)</span>`;
+          } else if (status === 'Nửa ngày') {
+            badgesHtml += `<span class="badge badge-half">🟡 Nửa ngày (0.5c)</span>`;
+          } else if (status === 'OT' || record.otHours > 0) {
+            badgesHtml += `<span class="badge badge-work">🟢 Làm (${record.workUnits || 1}c)</span>`;
+            badgesHtml += `<span class="badge badge-ot">⚡ OT +${record.otHours}h</span>`;
+          } else if (status.includes('Nghỉ phép')) {
+            badgesHtml += `<span class="badge badge-leave">🔴 Nghỉ phép</span>`;
+          } else if (status.includes('không lương')) {
+            badgesHtml += `<span class="badge badge-leave">⚪ Nghỉ KL</span>`;
+          } else if (status.includes('Lễ') || status.includes('Tuần')) {
+            badgesHtml += `<span class="badge badge-holiday">🔵 Nghỉ lễ</span>`;
+          } else {
+            badgesHtml += `<span class="badge badge-work">${status}</span>`;
+          }
+
+          if (record.note && record.note.trim() !== '') {
+            noteHtml = `<div class="day-note-preview" title="${escapeHtml(record.note)}">📝 ${escapeHtml(record.note)}</div>`;
+          }
+        }
+
+        cell.innerHTML = `
+          <div class="day-header">
+            <span class="day-number">${d}</span>
+            <span class="day-quick-add">+</span>
+          </div>
+          <div class="day-badges">${badgesHtml}</div>
+          ${noteHtml}
+        `;
+
+        grid.appendChild(cell);
+      }
+
+      // 3. Render leading days of next month to complete the 7-col grid
+      const totalCellsRendered = startOffset + daysInMonth;
+      const nextMonthExtra = (7 - (totalCellsRendered % 7)) % 7;
+      for (let d = 1; d <= nextMonthExtra; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'day-cell other-month';
+        cell.innerHTML = `
+          <div class="day-header">
+            <span class="day-number">${d}</span>
+          </div>
+        `;
+        grid.appendChild(cell);
+      }
+    }
+
+    /**
+     * ============================================================
+     * RENDER TABLE VIEW
+     * ============================================================
+     */
+    function renderTableView() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      const y = state.currentYear;
+      const m = state.currentMonth;
+      const daysInMonth = new Date(y, m, 0).getDate();
+
+      let hasRecords = false;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = formatDateKey(y, m, d);
+        const record = state.records[dateStr];
+        const dayOfWeek = getDayOfWeekName(dateStr);
+
+        if (record) {
+          hasRecords = true;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><b>${formatVNDate(dateStr)}</b></td>
+            <td>${dayOfWeek}</td>
+            <td>${renderStatusBadge(record.status)}</td>
+            <td><b>${record.workUnits !== undefined ? record.workUnits : 1}</b></td>
+            <td>${record.otHours > 0 ? `<span style="color:#fbbf24;font-weight:700;">+${record.otHours}h</span>` : '-'}</td>
+            <td>${record.checkIn || record.checkOut ? `${record.checkIn || '08:00'} → ${record.checkOut || '17:00'}` : '-'}</td>
+            <td><span style="color:var(--text-muted);">${escapeHtml(record.note || '-')}</span></td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="openEditModal('${dateStr}')">Sửa</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      if (!hasRecords) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">
+              Chưa có dữ liệu chấm công cho tháng này. Hãy nhấn <b>"Chấm công hôm nay"</b> hoặc click vào ngày trong lịch để bắt đầu!
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function renderStatusBadge(status) {
+      if (!status) return '-';
+      if (status === 'Đi làm') return '<span class="badge badge-work">Đi làm</span>';
+      if (status === 'Nửa ngày') return '<span class="badge badge-half">Nửa ngày</span>';
+      if (status === 'OT') return '<span class="badge badge-ot">OT Tăng ca</span>';
+      if (status.includes('Nghỉ phép')) return '<span class="badge badge-leave">Nghỉ phép</span>';
+      if (status.includes('không lương')) return '<span class="badge badge-leave">Nghỉ KL</span>';
+      if (status.includes('Lễ')) return '<span class="badge badge-holiday">Nghỉ lễ</span>';
+      return `<span class="badge badge-work">${status}</span>`;
+    }
+
+    function formatVNDate(dateStr) {
+      const p = dateStr.split('-');
+      return `${p[2]}/${p[1]}/${p[0]}`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    /**
+     * ============================================================
+     * KPI CALCULATIONS
+     * ============================================================
+     */
+    function computeAndRenderLocalKPIs() {
+      let totalWorkUnits = 0;
+      let totalOtHours = 0;
+      let workDaysCount = 0;
+      let otDaysCount = 0;
+      let leavePaid = 0;
+      let leaveUnpaid = 0;
+
+      Object.values(state.records).forEach(r => {
+        const units = parseFloat(r.workUnits) || 0;
+        const ot = parseFloat(r.otHours) || 0;
+        const st = String(r.status || '');
+
+        totalWorkUnits += units;
+        totalOtHours += ot;
+        if (units > 0) workDaysCount++;
+        if (ot > 0) otDaysCount++;
+
+        if (st.includes('Nghỉ phép')) leavePaid++;
+        else if (st.includes('không lương')) leaveUnpaid++;
+      });
+
+      updateKPIs({
+        totalWorkUnits: Math.round(totalWorkUnits * 100) / 100,
+        totalOtHours: Math.round(totalOtHours * 100) / 100,
+        workDaysCount: workDaysCount,
+        otDaysCount: otDaysCount,
+        leavePaidDays: leavePaid,
+        leaveUnpaidDays: leaveUnpaid
+      });
+    }
+
+    function updateKPIs(summary) {
+      if (!summary) return;
+
+      const workUnits = summary.totalWorkUnits || 0;
+      const otHours = summary.totalOtHours || 0;
+      const workDays = summary.workDaysCount || 0;
+      const paidLeave = summary.leavePaidDays || 0;
+      const unpaidLeave = summary.leaveUnpaidDays || 0;
+      const totalLeave = paidLeave + unpaidLeave;
+
+      document.getElementById('statWorkUnits').textContent = workUnits.toFixed(1);
+      document.getElementById('statWorkDays').textContent = workDays;
+      document.getElementById('statOtHours').textContent = otHours.toFixed(1);
+      
+      let otDays = summary.otDaysCount;
+      if (otDays === undefined) {
+        otDays = Object.values(state.records).filter(r => (parseFloat(r.otHours) || 0) > 0).length;
+      }
+      document.getElementById('statOtDays').textContent = otDays;
+
+      document.getElementById('statLeaveDays').textContent = totalLeave;
+      document.getElementById('statPaidLeave').textContent = paidLeave;
+      document.getElementById('statUnpaidLeave').textContent = unpaidLeave;
+
+      // Rate calculation
+      const standard = state.standardWorkUnits;
+      const rate = Math.round((workUnits / standard) * 100);
+      document.getElementById('statRate').textContent = `${rate}%`;
+
+      let evalText = 'Đang trong tháng';
+      if (rate >= 100) evalText = '🌟 Đạt chỉ tiêu chuẩn';
+      else if (rate >= 80) evalText = '👍 Tiến độ tốt';
+      else evalText = '📌 Cần thêm công';
+      document.getElementById('statRateEvaluation').textContent = evalText;
+
+      // Progress bars
+      document.getElementById('progressWork').style.width = `${Math.min((workUnits / standard) * 100, 100)}%`;
+      document.getElementById('progressOt').style.width = `${Math.min((otHours / 20) * 100, 100)}%`;
+      document.getElementById('progressLeave').style.width = `${Math.min((totalLeave / 5) * 100, 100)}%`;
+      document.getElementById('progressRate').style.width = `${Math.min(rate, 100)}%`;
+    }
+
+    /**
+     * ============================================================
+     * MODAL & CRUD ACTIONS
+     * ============================================================
+     */
+    function openEditModal(dateStr) {
+      document.getElementById('formDateKey').value = dateStr;
+      const parts = dateStr.split('-');
+      const vnFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      const dayOfWeek = getDayOfWeekName(dateStr);
+
+      document.getElementById('modalDateTitle').textContent = `Chấm công ngày ${vnFormatted}`;
+      document.getElementById('modalDayOfWeek').textContent = dayOfWeek;
+
+      const record = state.records[dateStr];
+
+      // Default values according to user specification
+      let status = 'Đi làm';
+      let workUnits = 1.0;
+      let otHours = 0;
+      let checkIn = state.defaultCheckIn; // 08:00
+      let checkOut = state.defaultCheckOut; // 17:00
+      let note = '';
+
+      if (record) {
+        status = record.status || 'Đi làm';
+        workUnits = record.workUnits !== undefined ? record.workUnits : 1.0;
+        otHours = record.otHours || 0;
+        checkIn = record.checkIn || state.defaultCheckIn;
+        checkOut = record.checkOut || (otHours > 0 ? state.defaultOtCheckOut : state.defaultCheckOut);
+        note = record.note || '';
+        document.getElementById('btnDeleteEntry').style.display = 'inline-flex';
+      } else {
+        document.getElementById('btnDeleteEntry').style.display = 'none';
+      }
+
+      document.getElementById('formWorkUnits').value = workUnits;
+      document.getElementById('formOtHours').value = otHours;
+      document.getElementById('formCheckIn').value = checkIn;
+      document.getElementById('formCheckOut').value = checkOut;
+      document.getElementById('formNote').value = note;
+
+      // Highlight active status pill
+      const pills = document.querySelectorAll('#statusPillsGroup .status-opt-btn');
+      pills.forEach(p => {
+        if (p.dataset.status === status) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+
+      document.getElementById('entryModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('entryModal').classList.remove('active');
+    }
+
+    function setOtPreset(hours, checkOutTime) {
+      document.getElementById('formOtHours').value = hours;
+      document.getElementById('formCheckOut').value = checkOutTime;
+      
+      // Auto select OT status button
+      const pills = document.querySelectorAll('#statusPillsGroup .status-opt-btn');
+      pills.forEach(p => {
+        if (p.dataset.status === 'OT') p.classList.add('active');
+        else p.classList.remove('active');
+      });
+      document.getElementById('formWorkUnits').value = 1.0;
+      if (!document.getElementById('formCheckIn').value) {
+        document.getElementById('formCheckIn').value = '08:00';
+      }
+    }
+
+    function handleSaveEntry() {
+      const dateStr = document.getElementById('formDateKey').value;
+      if (!dateStr) return;
+
+      const activeBtn = document.querySelector('#statusPillsGroup .status-opt-btn.active');
+      const status = activeBtn ? activeBtn.dataset.status : 'Đi làm';
+      const workUnits = parseFloat(document.getElementById('formWorkUnits').value) || 0;
+      const otHours = parseFloat(document.getElementById('formOtHours').value) || 0;
+      const checkIn = document.getElementById('formCheckIn').value.trim();
+      const checkOut = document.getElementById('formCheckOut').value.trim();
+      const note = document.getElementById('formNote').value.trim();
+      const dayOfWeek = getDayOfWeekName(dateStr);
+
+      const entry = {
+        id: `cc_${dateStr}`,
+        date: dateStr,
+        dayOfWeek: dayOfWeek,
+        status: status,
+        workUnits: workUnits,
+        otHours: otHours,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        note: note
+      };
+
+      // Optimistic update
+      state.records[dateStr] = entry;
+      renderCalendarGrid();
+      if (state.activeView === 'table') renderTableView();
+      computeAndRenderLocalKPIs();
+      closeEditModal();
+      showToast(`Đã lưu chấm công ngày ${formatVNDate(dateStr)}`, 'success');
+
+      updateSyncStatus('Đang lưu...', true);
+
+      if (state.isGAS) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            if (res && res.success) {
+              updateSyncStatus('Đã đồng bộ Google Sheet', false);
+            } else {
+              showToast('Lỗi khi lưu lên Sheet: ' + (res ? res.error : ''), 'error');
+              updateSyncStatus('Lỗi đồng bộ', false);
+            }
+          })
+          .withFailureHandler((err) => {
+            showToast('Lỗi kết nối GAS: ' + err.message, 'error');
+            updateSyncStatus('Mất kết nối', false);
+          })
+          .saveAttendance(entry);
+      } else {
+        // Save to LocalStorage
+        const stored = localStorage.getItem(STORAGE_KEY);
+        let allRecords = stored ? JSON.parse(stored) : {};
+        allRecords[dateStr] = entry;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecords));
+        setTimeout(() => updateSyncStatus('Chế độ Local Mock', false), 200);
+      }
+    }
+
+    function handleDeleteEntry() {
+      const dateStr = document.getElementById('formDateKey').value;
+      if (!dateStr) return;
+
+      if (!confirm(`Bạn có chắc muốn xóa chấm công ngày ${formatVNDate(dateStr)}?`)) {
+        return;
+      }
+
+      delete state.records[dateStr];
+      renderCalendarGrid();
+      if (state.activeView === 'table') renderTableView();
+      computeAndRenderLocalKPIs();
+      closeEditModal();
+      showToast(`Đã xóa chấm công ngày ${formatVNDate(dateStr)}`, 'info');
+
+      updateSyncStatus('Đang xóa...', true);
+
+      if (state.isGAS) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            updateSyncStatus('Đã đồng bộ Google Sheet', false);
+          })
+          .withFailureHandler((err) => {
+            showToast('Lỗi khi xóa: ' + err.message, 'error');
+            updateSyncStatus('Mất kết nối', false);
+          })
+          .deleteAttendance(dateStr);
+      } else {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          let allRecords = JSON.parse(stored);
+          delete allRecords[dateStr];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecords));
+        }
+        setTimeout(() => updateSyncStatus('Chế độ Local Mock', false), 200);
+      }
+    }
+
+    /**
+     * ============================================================
+     * BATCH FILL (T2 - T6)
+     * ============================================================
+     */
+    function handleBatchFillMonth() {
+      const y = state.currentYear;
+      const m = state.currentMonth;
+      const daysInMonth = new Date(y, m, 0).getDate();
+
+      if (!confirm(`Tự động điền "Đi làm (08:00 - 17:00, 1 công)" cho toàn bộ các ngày từ Thứ 2 đến Thứ 6 trong Tháng ${m}/${y} (các ngày chưa chấm)?`)) {
+        return;
+      }
+
+      const newEntries = [];
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = formatDateKey(y, m, d);
+        const dayOfWeek = getDayOfWeekName(dateStr);
+        if (dayOfWeek !== 'Thứ Bảy' && dayOfWeek !== 'Chủ Nhật') {
+          if (!state.records[dateStr]) {
+            const entry = {
+              id: `cc_${dateStr}`,
+              date: dateStr,
+              dayOfWeek: dayOfWeek,
+              status: 'Đi làm',
+              workUnits: 1.0,
+              otHours: 0,
+              checkIn: '08:00',
+              checkOut: '17:00',
+              note: ''
+            };
+            state.records[dateStr] = entry;
+            newEntries.push(entry);
+          }
+        }
+      }
+
+      if (newEntries.length === 0) {
+        showToast('Các ngày trong tuần đều đã được chấm công!', 'info');
+        return;
+      }
+
+      renderCalendarGrid();
+      if (state.activeView === 'table') renderTableView();
+      computeAndRenderLocalKPIs();
+      showToast(`Đã tự động chấm công ${newEntries.length} ngày trong tháng`, 'success');
+
+      updateSyncStatus('Đang lưu hàng loạt...', true);
+
+      if (state.isGAS) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            updateSyncStatus('Đã đồng bộ Google Sheet', false);
+          })
+          .withFailureHandler((err) => {
+            showToast('Lỗi batch save: ' + err.message, 'error');
+            updateSyncStatus('Mất kết nối', false);
+          })
+          .batchSaveAttendance(newEntries);
+      } else {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        let allRecords = stored ? JSON.parse(stored) : {};
+        newEntries.forEach(e => {
+          allRecords[e.date] = e;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecords));
+        setTimeout(() => updateSyncStatus('Chế độ Local Mock', false), 200);
+      }
+    }
+
+    /**
+     * ============================================================
+     * EXPORT TO CSV
+     * ============================================================
+     */
+    function exportToCSV() {
+      const y = state.currentYear;
+      const m = state.currentMonth;
+      const daysInMonth = new Date(y, m, 0).getDate();
+
+      let csv = '\uFEFFNgày,Thứ,Trạng thái,Số công,Giờ OT,Giờ vào,Giờ ra,Ghi chú\n';
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = formatDateKey(y, m, d);
+        const record = state.records[dateStr];
+        const dayOfWeek = getDayOfWeekName(dateStr);
+
+        if (record) {
+          const row = [
+            `"${formatVNDate(dateStr)}"`,
+            `"${dayOfWeek}"`,
+            `"${record.status || ''}"`,
+            `"${record.workUnits !== undefined ? record.workUnits : 1}"`,
+            `"${record.otHours || 0}"`,
+            `"${record.checkIn || '08:00'}"`,
+            `"${record.checkOut || (record.otHours > 0 ? '20:00' : '17:00')}"`,
+            `"${(record.note || '').replace(/"/g, '""')}"`
+          ];
+          csv += row.join(',') + '\n';
+        }
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Bang_Cham_Cong_T${pad2(m)}_${y}.csv`;
+      link.click();
+      showToast('Đã xuất file CSV thành công!', 'success');
+    }
+
+    /**
+     * ============================================================
+     * TOAST NOTIFICATION HELPER
+     * ============================================================
+     */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✅';
+      if (type === 'error') icon = '❌';
+
+      toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
