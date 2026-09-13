@@ -971,11 +971,21 @@ function renderComparison(prevExpense) {
 function manualRefresh() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
-  loadBalance();
+  
+  google.script.run
+    .withSuccessHandler(result => {
+      const balance = result || { income: 0, expense: 0, balance: 0 };
+      document.getElementById('balance').textContent = formatMoney(balance.balance);
+    })
+    .withFailureHandler(() => {
+      loadBalance();
+    })
+    .recalculateBalance();
+
   const bounds = computeBounds(period);
   if (bounds) delete periodCache[bounds.key];
   ensurePeriodLoaded(true);
-  setTimeout(() => btn.classList.remove('spinning'), 500);
+  setTimeout(() => btn.classList.remove('spinning'), 700);
 }
 
 function handleInput(event) {
