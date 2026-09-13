@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <base target="_top">
   <meta charset="UTF-8">
@@ -8,7 +9,8 @@
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <style>
     :root {
@@ -19,27 +21,27 @@
       --surface-hover: rgba(51, 65, 85, 0.85);
       --surface-border: rgba(255, 255, 255, 0.08);
       --surface-border-strong: rgba(255, 255, 255, 0.16);
-      
+
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
-      
+
       --primary: #3b82f6;
       --primary-hover: #2563eb;
       --primary-glow: rgba(59, 130, 246, 0.25);
-      
+
       --work: #10b981;
       --work-bg: rgba(16, 185, 129, 0.14);
       --work-border: rgba(16, 185, 129, 0.35);
-      
+
       --ot: #f59e0b;
       --ot-bg: rgba(245, 158, 11, 0.14);
       --ot-border: rgba(245, 158, 11, 0.35);
-      
+
       --leave: #ef4444;
       --leave-bg: rgba(239, 68, 68, 0.14);
       --leave-border: rgba(239, 68, 68, 0.35);
-      
+
       --half: #06b6d4;
       --half-bg: rgba(6, 182, 212, 0.14);
       --half-border: rgba(6, 182, 212, 0.35);
@@ -52,7 +54,7 @@
       --radius-md: 14px;
       --radius-lg: 20px;
       --radius-full: 9999px;
-      
+
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
       --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.35);
       --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.5);
@@ -76,7 +78,10 @@
       padding-bottom: 40px;
     }
 
-    button, input, select, textarea {
+    button,
+    input,
+    select,
+    textarea {
       font-family: inherit;
     }
 
@@ -244,8 +249,13 @@
     }
 
     @keyframes pulse {
-      0% { opacity: 0.4; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 0.4;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
 
     /* SUMMARY CARDS */
@@ -282,10 +292,21 @@
       height: 3px;
     }
 
-    .stat-card.work::before { background: linear-gradient(90deg, #10b981, #059669); }
-    .stat-card.ot::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
-    .stat-card.leave::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
-    .stat-card.rate::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+    .stat-card.work::before {
+      background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .stat-card.ot::before {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+
+    .stat-card.leave::before {
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+
+    .stat-card.rate::before {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+    }
 
     .stat-header {
       display: flex;
@@ -311,10 +332,25 @@
       justify-content: center;
     }
 
-    .stat-card.work .stat-icon { background: var(--work-bg); color: var(--work); }
-    .stat-card.ot .stat-icon { background: var(--ot-bg); color: var(--ot); }
-    .stat-card.leave .stat-icon { background: var(--leave-bg); color: var(--leave); }
-    .stat-card.rate .stat-icon { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+    .stat-card.work .stat-icon {
+      background: var(--work-bg);
+      color: var(--work);
+    }
+
+    .stat-card.ot .stat-icon {
+      background: var(--ot-bg);
+      color: var(--ot);
+    }
+
+    .stat-card.leave .stat-icon {
+      background: var(--leave-bg);
+      color: var(--leave);
+    }
+
+    .stat-card.rate .stat-icon {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+    }
 
     .stat-value {
       font-size: 30px;
@@ -451,7 +487,7 @@
 
     .calendar-weekdays {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 10px;
       text-align: center;
@@ -464,6 +500,14 @@
       padding: 8px 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .weekday-col .mobile-name {
+      display: none;
     }
 
     .weekday-col.weekend {
@@ -472,7 +516,7 @@
 
     .calendar-days {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -488,6 +532,15 @@
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .day-cell.selected {
+      border-color: var(--primary) !important;
+      background: rgba(59, 130, 246, 0.15) !important;
+      box-shadow: 0 0 0 1.5px var(--primary), var(--shadow-glow);
     }
 
     .day-cell:hover {
@@ -621,6 +674,184 @@
       background: rgba(0, 0, 0, 0.25);
       padding: 2px 6px;
       border-radius: 4px;
+    }
+
+    /* MOBILE INDICATORS (DOTS & MINI PILLS) */
+    .mobile-indicators {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .dot-work {
+      background: #10b981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+    }
+
+    .dot-ot {
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
+    }
+
+    .dot-half {
+      background: #06b6d4;
+      box-shadow: 0 0 6px rgba(6, 182, 212, 0.8);
+    }
+
+    .dot-leave {
+      background: #ef4444;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);
+    }
+
+    .dot-unpaid {
+      background: #94a3b8;
+    }
+
+    .dot-holiday {
+      background: #8b5cf6;
+      box-shadow: 0 0 6px rgba(139, 92, 246, 0.8);
+    }
+
+    .pill-ot-mini {
+      font-size: 8px;
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 3px;
+      padding: 0 2px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    /* SELECTED DAY DETAIL CARD (MOBILE & COMPACT VIEW) */
+    .selected-day-card {
+      display: none;
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--surface-border-strong);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-top: 14px;
+      box-shadow: var(--shadow-md);
+      animation: fadeInDay 0.25s ease;
+    }
+
+    @keyframes fadeInDay {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--surface-border);
+      gap: 10px;
+    }
+
+    .sd-date-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sd-date-badge {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      line-height: 1;
+      font-size: 17px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+      flex-shrink: 0;
+    }
+
+    .sd-date-text h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .sd-date-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .sd-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sd-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--surface-border);
+    }
+
+    .sd-item {
+      font-size: 12px;
+    }
+
+    .sd-item-label {
+      color: var(--text-dim);
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+
+    .sd-item-val {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sd-note-box {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--primary);
+      line-height: 1.4;
+    }
+
+    .sd-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .sd-actions .btn {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 13px;
     }
 
     /* TABLE LOG VIEW */
@@ -851,7 +1082,8 @@
       transition: all 0.15s ease;
     }
 
-    .preset-chip:hover, .preset-chip.active {
+    .preset-chip:hover,
+    .preset-chip.active {
       background: var(--ot-bg);
       border-color: var(--ot);
       color: #fbbf24;
@@ -864,7 +1096,9 @@
     }
 
     /* INPUTS */
-    .form-input, .form-textarea, .form-select {
+    .form-input,
+    .form-textarea,
+    .form-select {
       width: 100%;
       padding: 10px 14px;
       background: rgba(15, 23, 42, 0.7);
@@ -876,7 +1110,9 @@
       transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    .form-input:focus, .form-textarea:focus, .form-select:focus {
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
@@ -946,90 +1182,412 @@
       animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .toast.success { border-left: 4px solid #10b981; }
-    .toast.error { border-left: 4px solid #ef4444; }
-    .toast.info { border-left: 4px solid #3b82f6; }
-
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    .toast.success {
+      border-left: 4px solid #10b981;
     }
 
-    /* RESPONSIVE */
+    .toast.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    .toast.info {
+      border-left: 4px solid #3b82f6;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* RESPONSIVE & MOBILE OPTIMIZATION */
+    .modal-sheet-handle {
+      display: none;
+    }
+
     @media (max-width: 768px) {
       .app-container {
-        padding: 16px 10px 30px;
+        padding: 12px 10px 36px;
       }
+
+      .header {
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .brand {
+        gap: 10px;
+      }
+
+      .brand-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      .brand-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
       .brand-title {
-        font-size: 19px;
+        font-size: 18px;
       }
+
+      .brand-subtitle {
+        font-size: 12px;
+      }
+
+      .work-schedule-badge {
+        font-size: 10.5px;
+        padding: 2px 7px;
+      }
+
+      .header-actions {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .header-actions .status-pill {
+        width: 100%;
+        justify-content: center;
+        padding: 5px 10px;
+        font-size: 11.5px;
+      }
+
+      .header-actions .btn {
+        flex: 1;
+        padding: 9px 10px;
+        font-size: 12.5px;
+        justify-content: center;
+      }
+
+      /* SUMMARY CARDS 2X2 */
       .summary-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+        margin-bottom: 16px;
       }
+
       .stat-card {
-        padding: 14px 15px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
       }
+
+      .stat-label {
+        font-size: 11.5px;
+      }
+
+      .stat-icon {
+        width: 28px;
+        height: 28px;
+      }
+
+      .stat-icon svg {
+        width: 15px;
+        height: 15px;
+      }
+
       .stat-value {
-        font-size: 24px;
+        font-size: 22px;
       }
-      .day-cell {
-        min-height: 85px;
-        padding: 5px 6px;
-      }
-      .day-number {
+
+      .stat-unit {
         font-size: 12px;
-        width: 22px;
-        height: 22px;
       }
-      .badge {
-        font-size: 9.5px;
-        padding: 2px 4px;
+
+      .stat-sub {
+        font-size: 11px;
+        margin-top: 4px;
       }
-      .day-note-preview {
-        font-size: 9.5px;
-        -webkit-line-clamp: 1;
-      }
-      .status-options {
-        grid-template-columns: repeat(2, 1fr);
-      }
+
+      /* TOOLBAR */
       .toolbar {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        border-radius: var(--radius-md);
       }
+
       .month-nav {
         justify-content: space-between;
+        width: 100%;
       }
+
       .month-title {
+        font-size: 16px;
         min-width: unset;
+      }
+
+      .toolbar-actions {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .view-toggle {
+        flex: 1;
+      }
+
+      .view-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      /* CALENDAR GRID - HOÀN TOÀN KHÔNG BỊ TRÀN HAY MẤT GÓC */
+      .calendar-card {
+        padding: 10px 8px;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .calendar-weekdays {
+        gap: 3px;
+        margin-bottom: 6px;
+      }
+
+      .weekday-col {
+        font-size: 11.5px;
+        padding: 4px 1px;
+        font-weight: 700;
+      }
+
+      .weekday-col .desktop-name {
+        display: none;
+      }
+
+      .weekday-col .mobile-name {
+        display: inline-block;
+        font-weight: 800;
+      }
+
+      .calendar-days {
+        gap: 3px;
+      }
+
+      .day-cell {
+        min-height: 52px;
+        padding: 4px 2px;
+        border-radius: 8px;
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .day-cell:hover {
+        transform: none;
+      }
+
+      .day-header {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 2px;
+      }
+
+      .day-number {
+        font-size: 12px;
+        font-weight: 700;
+        width: 22px;
+        height: 22px;
+      }
+
+      .day-quick-add {
+        display: none !important;
+      }
+
+      /* Ẩn text badge dài và preview note trên mobile để không làm phình ô */
+      .desktop-badges,
+      .day-note-preview {
+        display: none !important;
+      }
+
+      /* Bật chấm chỉ báo tinh gọn */
+      .mobile-indicators {
+        display: flex;
+      }
+
+      /* Bật card xem & thao tác nhanh ngày được chọn */
+      .selected-day-card {
+        display: block;
+      }
+
+      /* BOTTOM SHEET MODAL TRÊN MOBILE */
+      .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      .modal {
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        max-height: 90vh;
+        transform: translateY(100%);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-overlay.active .modal {
+        transform: translateY(0);
+      }
+
+      .modal-sheet-handle {
+        display: block;
+        width: 38px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.22);
+        border-radius: var(--radius-full);
+        margin: 8px auto 2px;
+        flex-shrink: 0;
+      }
+
+      .modal-header {
+        padding: 12px 18px;
+      }
+
+      .modal-title {
+        font-size: 16px;
+      }
+
+      .modal-body {
+        padding: 14px 16px;
+        max-height: calc(85vh - 120px);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .status-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .status-opt-btn {
+        padding: 8px 6px;
+        font-size: 12px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .ot-presets {
+        gap: 4px;
+      }
+
+      .preset-chip {
+        padding: 3px 8px;
+        font-size: 11px;
+      }
+
+      .modal-footer {
+        padding: 12px 16px 24px;
+      }
+
+      .modal-footer .btn {
+        padding: 9px 12px;
+        font-size: 13px;
       }
     }
 
     @media (max-width: 480px) {
-      .calendar-weekdays .weekday-col {
+      .calendar-card {
+        padding: 8px 4px;
+      }
+
+      .calendar-weekdays {
+        gap: 2px;
+      }
+
+      .weekday-col {
         font-size: 11px;
-        padding: 4px 2px;
+        padding: 3px 0;
       }
+
+      .calendar-days {
+        gap: 2px;
+      }
+
       .day-cell {
-        min-height: 70px;
-        border-radius: var(--radius-sm);
+        min-height: 48px;
+        padding: 3px 1px;
       }
+
+      .day-number {
+        font-size: 11.5px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .indicator-dot {
+        width: 5px;
+        height: 5px;
+      }
+
+      .pill-ot-mini {
+        font-size: 7.5px;
+        padding: 0 1px;
+      }
+
       .summary-grid {
+        gap: 6px;
+      }
+
+      .stat-card {
+        padding: 10px 12px;
+      }
+
+      .stat-value {
+        font-size: 20px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+      }
+
+      .stat-sub {
+        font-size: 10.5px;
+      }
+
+      .sd-details-grid {
         grid-template-columns: 1fr;
+      }
+
+      .header-actions {
+        flex-direction: column;
+      }
+
+      .header-actions .btn {
+        width: 100%;
       }
     }
   </style>
 </head>
+
 <body>
 
   <div class="app-container">
-    
+
     <!-- HEADER -->
     <header class="header">
       <div class="brand">
         <div class="brand-icon">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
         <div>
@@ -1045,7 +1603,8 @@
           <span class="status-dot" id="syncDot"></span>
           <span id="syncText">Đã kết nối</span>
         </div>
-        <button class="btn btn-secondary" id="btnBatchMonth" title="Tự động điền Đi làm (08:00 - 17:00) cho các ngày từ T2 đến T6 trong tháng">
+        <button class="btn btn-secondary" id="btnBatchMonth"
+          title="Tự động điền Đi làm (08:00 - 17:00) cho các ngày từ T2 đến T6 trong tháng">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
@@ -1053,7 +1612,7 @@
         </button>
         <button class="btn btn-primary" id="btnTodayModal">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Chấm công hôm nay
         </button>
@@ -1068,7 +1627,8 @@
           <span class="stat-label">Tổng số công</span>
           <div class="stat-icon">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
@@ -1088,7 +1648,8 @@
           <span class="stat-label">Tăng ca (OT)</span>
           <div class="stat-icon">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
@@ -1108,7 +1669,8 @@
           <span class="stat-label">Ngày nghỉ</span>
           <div class="stat-icon">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
           </div>
         </div>
@@ -1116,7 +1678,8 @@
           <span id="statLeaveDays">0</span>
           <span class="stat-unit">ngày</span>
         </div>
-        <div class="stat-sub">Nghỉ phép: <span id="statPaidLeave">0</span> | Không lương: <span id="statUnpaidLeave">0</span></div>
+        <div class="stat-sub">Nghỉ phép: <span id="statPaidLeave">0</span> | Không lương: <span
+            id="statUnpaidLeave">0</span></div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progressLeave" style="background: #ef4444;"></div>
         </div>
@@ -1128,7 +1691,8 @@
           <span class="stat-label">Độ hoàn thành</span>
           <div class="stat-icon">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
         </div>
@@ -1148,17 +1712,22 @@
       <div class="month-nav">
         <button class="nav-arrow" id="btnPrevMonth" title="Tháng trước">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <div class="month-title" id="monthTitle">Tháng 09 / 2026</div>
         <button class="nav-arrow" id="btnNextMonth" title="Tháng sau">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
         <button class="btn btn-secondary" style="padding: 7px 12px; font-size: 12px;" id="btnCurrentMonth">
           Tháng này
+        </button>
+        <button class="btn-icon" id="btnRefreshMonth" style="padding: 7px 10px;" title="Tải lại dữ liệu tháng này từ Google Sheets">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
         </button>
       </div>
 
@@ -1166,20 +1735,23 @@
         <div class="view-toggle">
           <button class="view-btn active" id="viewBtnCalendar">
             <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Lịch tháng
           </button>
           <button class="view-btn" id="viewBtnTable">
             <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
             Danh sách
           </button>
         </div>
         <button class="btn-icon" id="btnExportCSV" title="Xuất dữ liệu CSV">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </button>
       </div>
@@ -1188,18 +1760,37 @@
     <!-- CALENDAR VIEW -->
     <main class="calendar-card" id="calendarView">
       <div class="calendar-weekdays">
-        <div class="weekday-col">Thứ 2</div>
-        <div class="weekday-col">Thứ 3</div>
-        <div class="weekday-col">Thứ 4</div>
-        <div class="weekday-col">Thứ 5</div>
-        <div class="weekday-col">Thứ 6</div>
-        <div class="weekday-col weekend">Thứ 7</div>
-        <div class="weekday-col weekend">Chủ Nhật</div>
+        <div class="weekday-col"><span class="desktop-name">Thứ 2</span><span class="mobile-name">T2</span></div>
+        <div class="weekday-col"><span class="desktop-name">Thứ 3</span><span class="mobile-name">T3</span></div>
+        <div class="weekday-col"><span class="desktop-name">Thứ 4</span><span class="mobile-name">T4</span></div>
+        <div class="weekday-col"><span class="desktop-name">Thứ 5</span><span class="mobile-name">T5</span></div>
+        <div class="weekday-col"><span class="desktop-name">Thứ 6</span><span class="mobile-name">T6</span></div>
+        <div class="weekday-col weekend"><span class="desktop-name">Thứ 7</span><span class="mobile-name">T7</span></div>
+        <div class="weekday-col weekend"><span class="desktop-name">Chủ Nhật</span><span class="mobile-name">CN</span></div>
       </div>
       <div class="calendar-days" id="calendarDaysGrid">
         <!-- Rendered by Javascript -->
       </div>
     </main>
+
+    <!-- SELECTED DAY QUICK DETAIL CARD (MOBILE & COMPACT VIEW) -->
+    <section class="selected-day-card" id="selectedDayCard">
+      <div class="sd-header">
+        <div class="sd-date-info">
+          <div class="sd-date-badge" id="sdBadgeDay">--</div>
+          <div class="sd-date-text">
+            <h4 id="sdTitle">Chọn một ngày để xem chi tiết</h4>
+            <p id="sdSubtitle">Chạm vào ô ngày trên lịch</p>
+          </div>
+        </div>
+        <div id="sdStatusPill">
+          <!-- Status badge dynamically injected -->
+        </div>
+      </div>
+      <div class="sd-body" id="sdBody">
+        <!-- Details injected by JS -->
+      </div>
+    </section>
 
     <!-- TABLE LOG VIEW -->
     <div class="table-view-container" id="tableView">
@@ -1224,9 +1815,10 @@
 
   </div>
 
-  <!-- MODAL CHẤM CÔNG & NOTE -->
+  <!-- MODAL CHẤM CÔNG & NOTE (BOTTOM SHEET ON MOBILE) -->
   <div class="modal-overlay" id="entryModal">
     <div class="modal">
+      <div class="modal-sheet-handle"></div>
       <div class="modal-header">
         <div>
           <h3 class="modal-title" id="modalDateTitle">Chấm công ngày 02/09/2026</h3>
@@ -1247,27 +1839,33 @@
           <div class="form-group">
             <label class="form-label">Trạng thái làm việc</label>
             <div class="status-options" id="statusPillsGroup">
-              <button type="button" class="status-opt-btn active work" data-status="Đi làm" data-work="1" data-ot="0" data-in="08:00" data-out="17:00">
+              <button type="button" class="status-opt-btn active work" data-status="Đi làm" data-work="1" data-ot="0"
+                data-in="08:00" data-out="17:00">
                 <span>🟢 Đi làm</span>
                 <small style="opacity:0.85">08:00 - 17:00 (1c)</small>
               </button>
-              <button type="button" class="status-opt-btn ot" data-status="OT" data-work="1" data-ot="3" data-in="08:00" data-out="20:00">
+              <button type="button" class="status-opt-btn ot" data-status="OT" data-work="1" data-ot="3" data-in="08:00"
+                data-out="20:00">
                 <span>🟠 Làm + OT</span>
                 <small style="opacity:0.85">Đến 20:00 (+3h)</small>
               </button>
-              <button type="button" class="status-opt-btn half" data-status="Nửa ngày" data-work="0.5" data-ot="0" data-in="08:00" data-out="12:00">
+              <button type="button" class="status-opt-btn half" data-status="Nửa ngày" data-work="0.5" data-ot="0"
+                data-in="08:00" data-out="12:00">
                 <span>🟡 Nửa ngày</span>
                 <small style="opacity:0.85">08:00 - 12:00 (0.5c)</small>
               </button>
-              <button type="button" class="status-opt-btn leave" data-status="Nghỉ phép" data-work="0" data-ot="0" data-in="" data-out="">
+              <button type="button" class="status-opt-btn leave" data-status="Nghỉ phép" data-work="0" data-ot="0"
+                data-in="" data-out="">
                 <span>🔴 Nghỉ phép</span>
                 <small style="opacity:0.85">Có phép</small>
               </button>
-              <button type="button" class="status-opt-btn unpaid" data-status="Nghỉ không lương" data-work="0" data-ot="0" data-in="" data-out="">
+              <button type="button" class="status-opt-btn unpaid" data-status="Nghỉ không lương" data-work="0"
+                data-ot="0" data-in="" data-out="">
                 <span>⚪ Nghỉ KL</span>
                 <small style="opacity:0.85">Không lương</small>
               </button>
-              <button type="button" class="status-opt-btn holiday" data-status="Nghỉ lễ" data-work="0" data-ot="0" data-in="" data-out="">
+              <button type="button" class="status-opt-btn holiday" data-status="Nghỉ lễ" data-work="0" data-ot="0"
+                data-in="" data-out="">
                 <span>🔵 Nghỉ lễ / Tuần</span>
                 <small style="opacity:0.85">0 công</small>
               </button>
@@ -1282,7 +1880,8 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="formOtHours">Giờ tăng ca (OT)</label>
-              <input type="number" step="0.5" min="0" max="24" class="form-input" id="formOtHours" value="0" placeholder="0">
+              <input type="number" step="0.5" min="0" max="24" class="form-input" id="formOtHours" value="0"
+                placeholder="0">
               <div class="ot-presets">
                 <span class="preset-chip" onclick="setOtPreset(1, '18:00')">+1h (18h)</span>
                 <span class="preset-chip" onclick="setOtPreset(2, '19:00')">+2h (19h)</span>
@@ -1309,7 +1908,8 @@
             <label class="form-label" for="formNote">
               <span>Ghi chú công việc / Tình hình trong ngày</span>
             </label>
-            <textarea class="form-textarea" id="formNote" rows="3" placeholder="Ví dụ: Họp khách hàng, fix xong bug sprint, tăng ca đẩy tiến độ..."></textarea>
+            <textarea class="form-textarea" id="formNote" rows="3"
+              placeholder="Ví dụ: Họp khách hàng, fix xong bug sprint, tăng ca đẩy tiến độ..."></textarea>
           </div>
 
         </div>
@@ -1345,6 +1945,8 @@
       defaultCheckOut: '17:00',
       defaultOtCheckOut: '20:00',
       defaultOtHours: 3,
+      selectedDate: '',
+      monthCache: {}, // Bộ nhớ đệm theo tháng: Key YYYY-MM -> { records, summary }
       isLoading: false,
       isGAS: typeof google !== 'undefined' && google.script && google.script.run
     };
@@ -1373,7 +1975,12 @@
         const now = new Date();
         state.currentYear = now.getFullYear();
         state.currentMonth = now.getMonth() + 1;
+        state.selectedDate = getTodayDateStr();
         loadMonthData(state.currentYear, state.currentMonth);
+      });
+      document.getElementById('btnRefreshMonth').addEventListener('click', () => {
+        loadMonthData(state.currentYear, state.currentMonth, true);
+        showToast('Đang tải lại dữ liệu tháng từ Sheet...', 'info');
       });
 
       // View toggle
@@ -1409,7 +2016,7 @@
         btn.addEventListener('click', () => {
           statusPills.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          
+
           const workVal = btn.dataset.work;
           const otVal = btn.dataset.ot;
           const inVal = btn.dataset.in;
@@ -1459,20 +2066,24 @@
       }
       state.currentYear = y;
       state.currentMonth = m;
+      state.selectedDate = '';
       loadMonthData(y, m);
     }
 
     function switchView(viewName) {
       state.activeView = viewName;
+      const selectedDayCard = document.getElementById('selectedDayCard');
       if (viewName === 'calendar') {
         document.getElementById('viewBtnCalendar').classList.add('active');
         document.getElementById('viewBtnTable').classList.remove('active');
         document.getElementById('calendarView').style.display = 'block';
+        if (selectedDayCard) selectedDayCard.style.display = '';
         document.getElementById('tableView').classList.remove('active');
       } else {
         document.getElementById('viewBtnTable').classList.add('active');
         document.getElementById('viewBtnCalendar').classList.remove('active');
         document.getElementById('calendarView').style.display = 'none';
+        if (selectedDayCard) selectedDayCard.style.display = 'none';
         document.getElementById('tableView').classList.add('active');
         renderTableView();
       }
@@ -1480,18 +2091,37 @@
 
     /**
      * ============================================================
-     * DATA LOADING & SYNC
+     * DATA LOADING & SYNC (TỐI ƯU HÓA: CHỈ LOAD ĐÚNG THÁNG CHỌN)
      * ============================================================
      */
-    function loadMonthData(year, month) {
+    function loadMonthData(year, month, forceRefresh = false) {
       updateMonthTitle(year, month);
-      updateSyncStatus('Đang tải dữ liệu...', true);
+      const monthKey = `${year}-${pad2(month)}`;
+
+      // 1. Nếu đã có dữ liệu cache và không bắt buộc làm mới -> Dùng ngay dữ liệu cache (0 request)
+      if (!forceRefresh && state.monthCache[monthKey]) {
+        const cached = state.monthCache[monthKey];
+        state.records = cached.records || {};
+        updateSyncStatus('Từ bộ nhớ đệm (Tối ưu)', false);
+        renderCalendarGrid();
+        if (state.activeView === 'table') renderTableView();
+        updateKPIs(cached.summary);
+        return;
+      }
+
+      // 2. Tải dữ liệu từ backend hoặc local mock cho riêng tháng này
+      updateSyncStatus('Đang tải dữ liệu tháng...', true);
 
       if (state.isGAS) {
         google.script.run
           .withSuccessHandler((res) => {
             if (res && res.success) {
               state.records = res.records || {};
+              // Lưu vào cache của tháng
+              state.monthCache[monthKey] = {
+                records: { ...state.records },
+                summary: res.summary
+              };
               updateSyncStatus('Đã kết nối Google Sheet', false);
               renderCalendarGrid();
               if (state.activeView === 'table') renderTableView();
@@ -1512,7 +2142,7 @@
           const stored = localStorage.getItem(STORAGE_KEY);
           let allRecords = {};
           if (stored) {
-            try { allRecords = JSON.parse(stored); } catch (e) {}
+            try { allRecords = JSON.parse(stored); } catch (e) { }
           } else {
             // Seed default mock records for current month
             allRecords = generateInitialMockData(year, month);
@@ -1528,11 +2158,17 @@
           });
 
           state.records = filtered;
+          const summary = computeLocalSummary(filtered);
+          state.monthCache[monthKey] = {
+            records: { ...filtered },
+            summary: summary
+          };
+
           updateSyncStatus('Chế độ Local Mock', false);
           renderCalendarGrid();
           if (state.activeView === 'table') renderTableView();
-          computeAndRenderLocalKPIs();
-        }, 150);
+          updateKPIs(summary);
+        }, 120);
       }
     }
 
@@ -1582,6 +2218,16 @@
       const m = state.currentMonth;
       const todayStr = getTodayDateStr();
 
+      // Nếu chưa chọn ngày hoặc ngày chọn không thuộc tháng đang xem, mặc định chọn ngày phù hợp
+      const prefixMonth = `${y}-${pad2(m)}`;
+      if (!state.selectedDate || !state.selectedDate.startsWith(prefixMonth)) {
+        if (todayStr.startsWith(prefixMonth)) {
+          state.selectedDate = todayStr;
+        } else {
+          state.selectedDate = `${prefixMonth}-01`;
+        }
+      }
+
       // First day of month
       const firstDate = new Date(y, m - 1, 1);
       let firstDayIndex = firstDate.getDay(); // 0 is Sunday, 1 is Mon...
@@ -1611,31 +2257,43 @@
         const dayOfWeekIndex = dayDate.getDay();
         const isWeekend = (dayOfWeekIndex === 0 || dayOfWeekIndex === 6);
         const isToday = (dateStr === todayStr);
+        const isSelected = (dateStr === state.selectedDate);
 
         const cell = document.createElement('div');
-        cell.className = `day-cell ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}`;
-        cell.onclick = () => openEditModal(dateStr);
+        cell.className = `day-cell ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`;
+        cell.dataset.date = dateStr;
+        cell.onclick = () => onDateCellClick(dateStr);
 
-        let badgesHtml = '';
+        let desktopBadgesHtml = '';
+        let mobileDotsHtml = '';
         let noteHtml = '';
 
         if (record) {
           const status = record.status || 'Đi làm';
           if (status === 'Đi làm') {
-            badgesHtml += `<span class="badge badge-work">🟢 Đi làm (${record.workUnits || 1}c)</span>`;
+            desktopBadgesHtml += `<span class="badge badge-work">🟢 Đi làm (${record.workUnits || 1}c)</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-work" title="Đi làm"></span>`;
           } else if (status === 'Nửa ngày') {
-            badgesHtml += `<span class="badge badge-half">🟡 Nửa ngày (0.5c)</span>`;
+            desktopBadgesHtml += `<span class="badge badge-half">🟡 Nửa ngày (0.5c)</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-half" title="Nửa ngày"></span>`;
           } else if (status === 'OT' || record.otHours > 0) {
-            badgesHtml += `<span class="badge badge-work">🟢 Làm (${record.workUnits || 1}c)</span>`;
-            badgesHtml += `<span class="badge badge-ot">⚡ OT +${record.otHours}h</span>`;
+            desktopBadgesHtml += `<span class="badge badge-work">🟢 Làm (${record.workUnits || 1}c)</span>`;
+            desktopBadgesHtml += `<span class="badge badge-ot">⚡ OT +${record.otHours}h</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-work" title="Đi làm"></span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-ot" title="OT"></span>`;
+            mobileDotsHtml += `<span class="pill-ot-mini">+${record.otHours}h</span>`;
           } else if (status.includes('Nghỉ phép')) {
-            badgesHtml += `<span class="badge badge-leave">🔴 Nghỉ phép</span>`;
+            desktopBadgesHtml += `<span class="badge badge-leave">🔴 Nghỉ phép</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-leave" title="Nghỉ phép"></span>`;
           } else if (status.includes('không lương')) {
-            badgesHtml += `<span class="badge badge-leave">⚪ Nghỉ KL</span>`;
+            desktopBadgesHtml += `<span class="badge badge-leave">⚪ Nghỉ KL</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-unpaid" title="Nghỉ không lương"></span>`;
           } else if (status.includes('Lễ') || status.includes('Tuần')) {
-            badgesHtml += `<span class="badge badge-holiday">🔵 Nghỉ lễ</span>`;
+            desktopBadgesHtml += `<span class="badge badge-holiday">🔵 Nghỉ lễ</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-holiday" title="Nghỉ lễ"></span>`;
           } else {
-            badgesHtml += `<span class="badge badge-work">${status}</span>`;
+            desktopBadgesHtml += `<span class="badge badge-work">${status}</span>`;
+            mobileDotsHtml += `<span class="indicator-dot dot-work" title="${status}"></span>`;
           }
 
           if (record.note && record.note.trim() !== '') {
@@ -1648,7 +2306,8 @@
             <span class="day-number">${d}</span>
             <span class="day-quick-add">+</span>
           </div>
-          <div class="day-badges">${badgesHtml}</div>
+          <div class="day-badges desktop-badges">${desktopBadgesHtml}</div>
+          <div class="mobile-indicators">${mobileDotsHtml}</div>
           ${noteHtml}
         `;
 
@@ -1667,6 +2326,168 @@
           </div>
         `;
         grid.appendChild(cell);
+      }
+
+      // Cập nhật thẻ chi tiết ngày được chọn
+      updateSelectedDayCard(state.selectedDate);
+    }
+
+    /**
+     * Xử lý khi chạm/click vào một ngày trên lịch
+     */
+    function onDateCellClick(dateStr) {
+      const isMobile = window.innerWidth <= 768;
+      const prevSelected = state.selectedDate;
+      state.selectedDate = dateStr;
+
+      // Cập nhật viền selected trên lưới
+      document.querySelectorAll('.day-cell.selected').forEach(c => c.classList.remove('selected'));
+      const cell = document.querySelector(`.day-cell[data-date="${dateStr}"]`);
+      if (cell) cell.classList.add('selected');
+
+      // Luôn cập nhật thẻ xem nhanh
+      updateSelectedDayCard(dateStr);
+
+      // Nếu trên Desktop hoặc nếu người dùng chạm lần thứ 2 vào cùng ngày trên Mobile thì mở Modal ngay
+      if (!isMobile || prevSelected === dateStr) {
+        openEditModal(dateStr);
+      }
+    }
+
+    /**
+     * Cập nhật thông tin thẻ xem nhanh ngày được chọn (Quick Day Detail Card)
+     */
+    function updateSelectedDayCard(dateStr) {
+      const card = document.getElementById('selectedDayCard');
+      if (!card) return;
+
+      if (!dateStr) {
+        dateStr = state.selectedDate || getTodayDateStr();
+      }
+
+      const parts = dateStr.split('-');
+      const dayNum = parts[2];
+      const dayOfWeek = getDayOfWeekName(dateStr);
+      const formattedDate = formatVNDate(dateStr);
+      const isToday = (dateStr === getTodayDateStr());
+
+      const badgeEl = document.getElementById('sdBadgeDay');
+      const titleEl = document.getElementById('sdTitle');
+      const subtitleEl = document.getElementById('sdSubtitle');
+      const statusPillEl = document.getElementById('sdStatusPill');
+      const bodyEl = document.getElementById('sdBody');
+
+      if (badgeEl) badgeEl.textContent = dayNum;
+      if (titleEl) titleEl.textContent = `${dayOfWeek}, ${formattedDate}`;
+      if (subtitleEl) subtitleEl.textContent = isToday ? '🌟 Hôm nay' : `Tháng ${parts[1]} / ${parts[0]}`;
+
+      const record = state.records[dateStr];
+
+      if (record) {
+        const status = record.status || 'Đi làm';
+        if (statusPillEl) statusPillEl.innerHTML = renderStatusBadge(status);
+
+        let detailsHtml = `
+          <div class="sd-details-grid">
+            <div class="sd-item">
+              <div class="sd-item-label">Số công ghi nhận</div>
+              <div class="sd-item-val" style="color:#10b981;"><b>${record.workUnits !== undefined ? record.workUnits : 1}</b> công</div>
+            </div>
+            <div class="sd-item">
+              <div class="sd-item-label">Tăng ca (OT)</div>
+              <div class="sd-item-val" style="color:#f59e0b;"><b>${record.otHours > 0 ? `+${record.otHours} giờ (OT)` : 'Không tăng ca'}</b></div>
+            </div>
+            <div class="sd-item">
+              <div class="sd-item-label">Khung giờ làm việc</div>
+              <div class="sd-item-val">${record.checkIn || record.checkOut ? `${record.checkIn || '08:00'} → ${record.checkOut || '17:00'}` : 'Chưa đặt giờ'}</div>
+            </div>
+            <div class="sd-item">
+              <div class="sd-item-label">Trạng thái</div>
+              <div class="sd-item-val">${status}</div>
+            </div>
+          </div>
+        `;
+
+        if (record.note && record.note.trim() !== '') {
+          detailsHtml += `
+            <div class="sd-note-box">
+              <b>Ghi chú:</b> ${escapeHtml(record.note)}
+            </div>
+          `;
+        }
+
+        detailsHtml += `
+          <div class="sd-actions">
+            <button class="btn btn-primary" onclick="openEditModal('${dateStr}')">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Chỉnh sửa ngày này
+            </button>
+          </div>
+        `;
+
+        if (bodyEl) bodyEl.innerHTML = detailsHtml;
+      } else {
+        if (statusPillEl) statusPillEl.innerHTML = '<span class="status-pill" style="font-size:11px;">Chưa chấm công</span>';
+        if (bodyEl) {
+          bodyEl.innerHTML = `
+            <p style="font-size: 13px; color: var(--text-muted); margin: 2px 0 6px;">
+              Chưa có dữ liệu chấm công cho ngày này.
+            </p>
+            <div class="sd-actions">
+              <button class="btn btn-primary" onclick="openEditModal('${dateStr}')">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Chấm công ngày này
+              </button>
+              <button class="btn btn-secondary" onclick="quickSaveDayWork('${dateStr}')" title="Chấm nhanh 1 công chuẩn 08:00 - 17:00">
+                ⚡ Chấm chuẩn 1c
+              </button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    /**
+     * Chấm nhanh 1 công chuẩn cho ngày đang chọn
+     */
+    function quickSaveDayWork(dateStr) {
+      const dayOfWeek = getDayOfWeekName(dateStr);
+      const entry = {
+        id: `cc_${dateStr}`,
+        date: dateStr,
+        dayOfWeek: dayOfWeek,
+        status: 'Đi làm',
+        workUnits: 1.0,
+        otHours: 0,
+        checkIn: '08:00',
+        checkOut: '17:00',
+        note: ''
+      };
+
+      state.records[dateStr] = entry;
+      renderCalendarGrid();
+      if (state.activeView === 'table') renderTableView();
+      computeAndRenderLocalKPIs();
+      updateSelectedDayCard(dateStr);
+      showToast(`Đã chấm nhanh 1 công ngày ${formatVNDate(dateStr)}`, 'success');
+
+      updateSyncStatus('Đang lưu...', true);
+
+      if (state.isGAS) {
+        google.script.run
+          .withSuccessHandler(() => updateSyncStatus('Đã đồng bộ Google Sheet', false))
+          .withFailureHandler((err) => showToast('Lỗi lưu: ' + err.message, 'error'))
+          .saveAttendance(entry);
+      } else {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        let allRecords = stored ? JSON.parse(stored) : {};
+        allRecords[dateStr] = entry;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecords));
+        setTimeout(() => updateSyncStatus('Chế độ Local Mock', false), 200);
       }
     }
 
@@ -1750,7 +2571,7 @@
      * KPI CALCULATIONS
      * ============================================================
      */
-    function computeAndRenderLocalKPIs() {
+    function computeLocalSummary(recordsMap) {
       let totalWorkUnits = 0;
       let totalOtHours = 0;
       let workDaysCount = 0;
@@ -1758,7 +2579,7 @@
       let leavePaid = 0;
       let leaveUnpaid = 0;
 
-      Object.values(state.records).forEach(r => {
+      Object.values(recordsMap || {}).forEach(r => {
         const units = parseFloat(r.workUnits) || 0;
         const ot = parseFloat(r.otHours) || 0;
         const st = String(r.status || '');
@@ -1772,14 +2593,26 @@
         else if (st.includes('không lương')) leaveUnpaid++;
       });
 
-      updateKPIs({
+      return {
         totalWorkUnits: Math.round(totalWorkUnits * 100) / 100,
         totalOtHours: Math.round(totalOtHours * 100) / 100,
         workDaysCount: workDaysCount,
         otDaysCount: otDaysCount,
         leavePaidDays: leavePaid,
         leaveUnpaidDays: leaveUnpaid
-      });
+      };
+    }
+
+    function computeAndRenderLocalKPIs() {
+      const summary = computeLocalSummary(state.records);
+      updateKPIs(summary);
+
+      // Cập nhật lại cache cho tháng hiện tại
+      const monthKey = `${state.currentYear}-${pad2(state.currentMonth)}`;
+      state.monthCache[monthKey] = {
+        records: { ...state.records },
+        summary: summary
+      };
     }
 
     function updateKPIs(summary) {
@@ -1795,7 +2628,7 @@
       document.getElementById('statWorkUnits').textContent = workUnits.toFixed(1);
       document.getElementById('statWorkDays').textContent = workDays;
       document.getElementById('statOtHours').textContent = otHours.toFixed(1);
-      
+
       let otDays = summary.otDaysCount;
       if (otDays === undefined) {
         otDays = Object.values(state.records).filter(r => (parseFloat(r.otHours) || 0) > 0).length;
@@ -1886,7 +2719,7 @@
     function setOtPreset(hours, checkOutTime) {
       document.getElementById('formOtHours').value = hours;
       document.getElementById('formCheckOut').value = checkOutTime;
-      
+
       // Auto select OT status button
       const pills = document.querySelectorAll('#statusPillsGroup .status-opt-btn');
       pills.forEach(p => {
@@ -1930,6 +2763,7 @@
       if (state.activeView === 'table') renderTableView();
       computeAndRenderLocalKPIs();
       closeEditModal();
+      updateSelectedDayCard(dateStr);
       showToast(`Đã lưu chấm công ngày ${formatVNDate(dateStr)}`, 'success');
 
       updateSyncStatus('Đang lưu...', true);
@@ -1972,6 +2806,7 @@
       if (state.activeView === 'table') renderTableView();
       computeAndRenderLocalKPIs();
       closeEditModal();
+      updateSelectedDayCard(dateStr);
       showToast(`Đã xóa chấm công ngày ${formatVNDate(dateStr)}`, 'info');
 
       updateSyncStatus('Đang xóa...', true);
@@ -2133,4 +2968,5 @@
     }
   </script>
 </body>
+
 </html>

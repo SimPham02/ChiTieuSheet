@@ -178,6 +178,7 @@ function formatDateKey_(d) {
 
 /**
  * Lấy dữ liệu chấm công trong 1 tháng kèm thống kê
+ * TỐI ƯU HÓA HIỆU NĂNG: Không đọc toàn bộ bảng tính, chỉ quét cột Ngày và đọc đúng các dòng thuộc tháng
  * @param {number} year - Ví dụ 2026
  * @param {number} month - 1 đến 12
  */
@@ -200,10 +201,12 @@ function getMonthAttendance(year, month) {
     let holidayDays = 0;
 
     if (lastRow >= 2) {
-      const data = sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues();
-      for (let i = 0; i < data.length; i++) {
-        const row = data[i];
-        let dateVal = row[1];
+      // 1. Chỉ đọc duy nhất 1 cột Ngày (Cột B: từ dòng 2 đến lastRow) để tìm các dòng khớp
+      const dateColumnValues = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+      const matchedRows = [];
+
+      for (let i = 0; i < dateColumnValues.length; i++) {
+        let dateVal = dateColumnValues[i][0];
         if (!dateVal) continue;
 
         let dateStr = '';
@@ -214,47 +217,79 @@ function getMonthAttendance(year, month) {
           if (dateStr.length > 10) dateStr = dateStr.substring(0, 10);
         }
 
-        // Kiểm tra xem có đúng tháng đang yêu cầu không
         if (dateStr.startsWith(monthPrefix)) {
-          const status = String(row[3] || '').trim();
-          const workUnits = parseFloat(row[4]) || 0;
-          const otHours = parseFloat(row[5]) || 0;
-          const checkIn = String(row[6] || '').trim();
-          const checkOut = String(row[7] || '').trim();
-          const note = String(row[8] || '').trim();
-          const updatedAt = String(row[9] || '').trim();
-          const id = String(row[0] || `cc_${dateStr}`);
-
-          const record = {
-            id: id,
-            date: dateStr,
-            dayOfWeek: row[2] || getDayOfWeekVN_(dateStr),
-            status: status,
-            workUnits: workUnits,
-            otHours: otHours,
-            checkIn: checkIn,
-            checkOut: checkOut,
-            note: note,
-            updatedAt: updatedAt,
-            rowIndex: i + 2
-          };
-
-          items[dateStr] = record;
-
-          // Thống kê
-          totalWorkUnits += workUnits;
-          totalOtHours += otHours;
-          if (workUnits > 0) workDaysCount++;
-          if (otHours > 0) otDaysCount++;
-
-          if (status.includes('Nghỉ phép') || status === 'Nghỉ phép') {
-            leavePaidDays++;
-          } else if (status.includes('Nghỉ không lương') || status === 'Nghỉ không lương') {
-            leaveUnpaidDays++;
-          } else if (status.includes('Lễ') || status.includes('Nghỉ tuần') || status === 'Nghỉ') {
-            holidayDays++;
-          }
+          matchedRows.push({
+            rowIndex: i + 2,
+            dateStr: dateStr
+          });
         }
+      }
+
+      // 2. Chỉ đọc dữ liệu của các dòng thuộc tháng được chọn
+      if (matchedRows.length > 0) {
+        const minRow = matchedRows[0].rowIndex;
+        const maxRow = matchedRows[matchedRows.length - 1].rowIndex;
+        const rowSpan = maxRow - minRow + 1;
+
+        // Nếu các dòng nằm trong khoảng hẹp (<= 60 dòng): Đọc duy nhất 1 range từ minRow đến maxRow
+        if (rowSpan <= Math.max(matchedRows.length * 2, 60)) {
+          const rangeData = sheet.getRange(minRow, 1, rowSpan, HEADERS.length).getValues();
+          const targetSet = new Set(matchedRows.map(m => m.rowIndex));
+
+          for (let k = 0; k < rangeData.length; k++) {
+            const currentRowIndex = minRow + k;
+            if (targetSet.has(currentRowIndex)) {
+              processRow_(rangeData[k], currentRowIndex);
+            }
+          }
+        } else {
+          // Trường hợp các dòng rải rác cách xa nhau: đọc từng dòng cần thiết
+          matchedRows.forEach(m => {
+            const rowData = sheet.getRange(m.rowIndex, 1, 1, HEADERS.length).getValues()[0];
+            processRow_(rowData, m.rowIndex);
+          });
+        }
+      }
+    }
+
+    function processRow_(row, rowIndex) {
+      let dateVal = row[1];
+      let dateStr = (dateVal instanceof Date) ? formatDateKey_(dateVal) : String(dateVal).trim().substring(0, 10);
+
+      const status = String(row[3] || '').trim();
+      const workUnits = parseFloat(row[4]) || 0;
+      const otHours = parseFloat(row[5]) || 0;
+      const checkIn = String(row[6] || '').trim();
+      const checkOut = String(row[7] || '').trim();
+      const note = String(row[8] || '').trim();
+      const updatedAt = String(row[9] || '').trim();
+      const id = String(row[0] || `cc_${dateStr}`);
+
+      items[dateStr] = {
+        id: id,
+        date: dateStr,
+        dayOfWeek: row[2] || getDayOfWeekVN_(dateStr),
+        status: status,
+        workUnits: workUnits,
+        otHours: otHours,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        note: note,
+        updatedAt: updatedAt,
+        rowIndex: rowIndex
+      };
+
+      totalWorkUnits += workUnits;
+      totalOtHours += otHours;
+      if (workUnits > 0) workDaysCount++;
+      if (otHours > 0) otDaysCount++;
+
+      if (status.includes('Nghỉ phép') || status === 'Nghỉ phép') {
+        leavePaidDays++;
+      } else if (status.includes('Nghỉ không lương') || status === 'Nghỉ không lương') {
+        leaveUnpaidDays++;
+      } else if (status.includes('Lễ') || status.includes('Nghỉ tuần') || status === 'Nghỉ') {
+        holidayDays++;
       }
     }
 
