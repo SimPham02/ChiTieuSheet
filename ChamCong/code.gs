@@ -163,13 +163,16 @@ function getDayOfWeekVN_(dateStr) {
 }
 
 /**
- * Định dạng ngày YYYY-MM-DD
+ * Định dạng ngày YYYY-MM-DD an toàn tuyệt đối
  */
 function formatDateKey_(d) {
+  if (!d) return '';
   if (typeof d === 'string') {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(d.trim())) return d.trim();
-    d = new Date(d);
+    const trimmed = d.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    d = new Date(trimmed);
   }
+  if (!(d instanceof Date) || isNaN(d.getTime())) return '';
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
@@ -225,7 +228,7 @@ function getMonthAttendance(year, month) {
         }
       }
 
-      // 2. Chỉ đọc dữ liệu của các dòng thuộc tháng được chọn
+      // 2. Chỉ đọc dữ liệu của các dòng thuộc tháng được chọn bằng Clustered Batch Read
       if (matchedRows.length > 0) {
         const minRow = matchedRows[0].rowIndex;
         const maxRow = matchedRows[matchedRows.length - 1].rowIndex;
@@ -243,10 +246,32 @@ function getMonthAttendance(year, month) {
             }
           }
         } else {
-          // Trường hợp các dòng rải rác cách xa nhau: đọc từng dòng cần thiết
-          matchedRows.forEach(m => {
-            const rowData = sheet.getRange(m.rowIndex, 1, 1, HEADERS.length).getValues()[0];
-            processRow_(rowData, m.rowIndex);
+          // Gom các dòng kế tiếp nhau (khoảng cách <= 5 dòng) vào chung 1 khối để giảm số lần gọi API
+          const clusters = [];
+          let curCluster = { start: matchedRows[0].rowIndex, end: matchedRows[0].rowIndex, rowIndices: [matchedRows[0].rowIndex] };
+
+          for (let i = 1; i < matchedRows.length; i++) {
+            const r = matchedRows[i].rowIndex;
+            if (r - curCluster.end <= 5) {
+              curCluster.end = r;
+              curCluster.rowIndices.push(r);
+            } else {
+              clusters.push(curCluster);
+              curCluster = { start: r, end: r, rowIndices: [r] };
+            }
+          }
+          clusters.push(curCluster);
+
+          clusters.forEach(cluster => {
+            const span = cluster.end - cluster.start + 1;
+            const blockValues = sheet.getRange(cluster.start, 1, span, HEADERS.length).getValues();
+            const setInCluster = new Set(cluster.rowIndices);
+            for (let k = 0; k < blockValues.length; k++) {
+              const curR = cluster.start + k;
+              if (setInCluster.has(curR)) {
+                processRow_(blockValues[k], curR);
+              }
+            }
           });
         }
       }

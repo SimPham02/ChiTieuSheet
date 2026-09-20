@@ -647,30 +647,24 @@
 <script>
 'use strict';
 
-const CATEGORY_ICONS = {
-  'Ăn uống':'🍜','Cà phê & đồ uống':'☕','Di chuyển':'🚗','Nhà ở':'🏠',
-  'Hóa đơn':'🧾','Sức khỏe':'💊','Mua sắm':'🛍️','Học tập':'📚',
-  'Giải trí':'🎮','Gia đình':'👨‍👩‍👧','Đầu tư':'📈','Quà tặng':'🎁',
-  'Lương':'💰','Thưởng':'🎉','Thu nhập khác':'💵','Khác':'💸'
-};
-
-const CATEGORY_STYLES = {
-  'Ăn uống':{bg:'#fff1e6',fg:'#c2540c'},
-  'Cà phê & đồ uống':{bg:'#f4ebe0',fg:'#8a5a2b'},
-  'Di chuyển':{bg:'#e8f0fe',fg:'#2a5cb8'},
-  'Nhà ở':{bg:'#eef6ee',fg:'#2f7d3a'},
-  'Hóa đơn':{bg:'#fef2f2',fg:'#c23d3d'},
-  'Sức khỏe':{bg:'#fdecf3',fg:'#c23d7a'},
-  'Mua sắm':{bg:'#f3ecfd',fg:'#7440c2'},
-  'Học tập':{bg:'#eaf6fb',fg:'#1f7a99'},
-  'Giải trí':{bg:'#fef8e6',fg:'#b8860b'},
-  'Gia đình':{bg:'#eef2fb',fg:'#3c53a3'},
-  'Đầu tư':{bg:'#e9faf1',fg:'#0f8a52'},
-  'Quà tặng':{bg:'#fdecec',fg:'#c23d3d'},
-  'Lương':{bg:'#e6f6f0',fg:'#15966a'},
-  'Thưởng':{bg:'#fff6e0',fg:'#b8860b'},
-  'Thu nhập khác':{bg:'#e6f6f0',fg:'#15966a'},
-  'Khác':{bg:'#f1f5fa',fg:'#657083'}
+// Hợp nhất biểu tượng và màu sắc danh mục trong 1 bảng cấu hình duy nhất
+const CATEGORY_MAP = {
+  'Ăn uống': { icon: '🍜', bg: '#fff1e6', fg: '#c2540c' },
+  'Cà phê & đồ uống': { icon: '☕', bg: '#f4ebe0', fg: '#8a5a2b' },
+  'Di chuyển': { icon: '🚗', bg: '#e8f0fe', fg: '#2a5cb8' },
+  'Nhà ở': { icon: '🏠', bg: '#eef6ee', fg: '#2f7d3a' },
+  'Hóa đơn': { icon: '🧾', bg: '#fef2f2', fg: '#c23d3d' },
+  'Sức khỏe': { icon: '💊', bg: '#fdecf3', fg: '#c23d7a' },
+  'Mua sắm': { icon: '🛍️', bg: '#f3ecfd', fg: '#7440c2' },
+  'Học tập': { icon: '📚', bg: '#eaf6fb', fg: '#1f7a99' },
+  'Giải trí': { icon: '🎮', bg: '#fef8e6', fg: '#b8860b' },
+  'Gia đình': { icon: '👨‍👩‍👧', bg: '#eef2fb', fg: '#3c53a3' },
+  'Đầu tư': { icon: '📈', bg: '#e9faf1', fg: '#0f8a52' },
+  'Quà tặng': { icon: '🎁', bg: '#fdecec', fg: '#c23d3d' },
+  'Lương': { icon: '💰', bg: '#e6f6f0', fg: '#15966a' },
+  'Thưởng': { icon: '🎉', bg: '#fff6e0', fg: '#b8860b' },
+  'Thu nhập khác': { icon: '💵', bg: '#e6f6f0', fg: '#15966a' },
+  'Khác': { icon: '💸', bg: '#f1f5fa', fg: '#657083' }
 };
 
 const EXPENSE_CATEGORIES = ['Ăn uống','Cà phê & đồ uống','Di chuyển','Nhà ở','Hóa đơn','Sức khỏe','Mua sắm','Học tập','Giải trí','Gia đình','Đầu tư','Quà tặng','Khác'];
@@ -678,7 +672,13 @@ const INCOME_CATEGORIES = ['Lương','Thưởng','Thu nhập khác','Đầu tư'
 const MONTH_NAMES = ['Th1','Th2','Th3','Th4','Th5','Th6','Th7','Th8','Th9','Th10','Th11','Th12'];
 const SYNC_CHUNK_SIZE = 3000;
 
+// Singleton formatters dùng chung, ngăn chặn khởi tạo lặp đi lặp lại trong vòng lặp
+const NF_VI = new Intl.NumberFormat('vi-VN');
+const DF_DATE = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const DF_TIME = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
 let currentData = [];
+let lastSummary = null;
 let periodCache = {};      // periodKey -> transaction[]
 let period = 'today';
 let selectedMonth = null;  // 'YYYY-MM'
@@ -699,23 +699,24 @@ function toDateInputValue(date) {
 }
 
 function formatMoney(value) {
-  return new Intl.NumberFormat('vi-VN').format(Number(value) || 0) + ' ₫';
+  return NF_VI.format(Number(value) || 0) + ' ₫';
 }
 
 function formatDate(date) {
-  return new Intl.DateTimeFormat('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}).format(date);
+  return DF_DATE.format(date);
 }
 
 function formatTime(date) {
-  return new Intl.DateTimeFormat('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(date);
+  return DF_TIME.format(date);
 }
 
 function categoryIcon(category, type) {
-  return CATEGORY_ICONS[category] || (type === 'Thu' ? '💵' : '💸');
+  const info = CATEGORY_MAP[category] || CATEGORY_MAP['Khác'];
+  return info.icon || (type === 'Thu' ? '💵' : '💸');
 }
 
 function categoryStyle(category) {
-  return CATEGORY_STYLES[category] || CATEGORY_STYLES['Khác'];
+  return CATEGORY_MAP[category] || CATEGORY_MAP['Khác'];
 }
 
 function setBusy(busy) {
@@ -949,7 +950,7 @@ function loadPreviousPeriodComparison() {
 function renderComparison(prevExpense) {
   const compareRow = document.getElementById('compareRow');
   const compareValue = document.getElementById('compareValue');
-  const summary = summarize(currentData);
+  const summary = lastSummary || summarize(currentData);
 
   compareRow.style.display = 'flex';
 
@@ -1176,6 +1177,7 @@ function summarize(items) {
 
 function render() {
   const summary = summarize(currentData);
+  lastSummary = summary;
 
   document.getElementById('income').textContent = formatMoney(summary.income);
   document.getElementById('expense').textContent = formatMoney(summary.expense);

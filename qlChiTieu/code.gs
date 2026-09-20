@@ -398,43 +398,22 @@ function parseCompoundAmount_(text) {
   return null;
 }
 
+/**
+ * Chuyển đổi token số và đơn vị tiền tệ thành số tiền chuẩn (₫)
+ * Tái sử dụng cleanNumber_ để loại bỏ hoàn toàn code trùng lặp
+ */
 function parseAmountToken_(numberText, unit) {
-  let cleaned = String(numberText).trim();
-
-  const dotCount = (cleaned.match(/\./g) || []).length;
-  const commaCount = (cleaned.match(/,/g) || []).length;
-
-  if (dotCount && commaCount) {
-    cleaned = cleaned.replace(/\./g, '').replace(',', '.');
-  } else if (dotCount > 1) {
-    cleaned = cleaned.replace(/\./g, '');
-  } else if (commaCount > 1) {
-    cleaned = cleaned.replace(/,/g, '');
-  } else if (dotCount === 1) {
-    const parts = cleaned.split('.');
-    cleaned = parts[1] && parts[1].length === 3
-      ? cleaned.replace('.', '')
-      : cleaned;
-  } else if (commaCount === 1) {
-    const parts = cleaned.split(',');
-    cleaned = parts[1] && parts[1].length === 3
-      ? cleaned.replace(',', '')
-      : cleaned.replace(',', '.');
-  }
-
-  let amount = parseFloat(cleaned);
-  if (isNaN(amount)) return 0;
+  let amount = cleanNumber_(numberText);
+  if (!isFinite(amount) || amount <= 0) return 0;
 
   unit = String(unit || '').toLowerCase().trim();
 
   if (unit === 'k' || unit === 'nghìn' || unit === 'ngàn') {
     amount *= 1000;
-  } else if (unit === 'tr' || unit === 'triệu' || unit === 'm') {
+  } else if (unit === 'tr' || unit === 'triệu' || unit === 'm' || unit === 'củ') {
     amount *= 1000000;
   } else if (unit === 'tỷ' || unit === 'ti' || unit === 'ty') {
     amount *= 1000000000;
-  } else if (unit === 'củ') {
-    amount *= 1000000;
   } else if (unit === 'lít' || unit === 'lit' || unit === 'lốp' || unit === 'lop' || unit === 'loét') {
     amount *= 100000;
   }
@@ -547,37 +526,38 @@ function parseInput(text) {
   };
 }
 
+// Bảng quy tắc phân loại tĩnh (khởi tạo 1 lần duy nhất, tránh compile lại Regex)
+const EXPENSE_RULES_STATIC = [
+  ['Ăn uống', /ăn|cơm|phở|bún|mì|trưa|sáng|tối|nhà hàng|quán|đồ ăn|food|bánh|lẩu|nướng/i],
+  ['Cà phê & đồ uống', /cà phê|cafe|trà sữa|nước uống|bia|đồ uống|sinh tố|nước ép/i],
+  ['Di chuyển', /xăng|grab|taxi|be\b|go\b|xe|ship|gửi xe|vé xe|bus|xe buýt|bảo dưỡng/i],
+  ['Nhà ở', /thuê nhà|tiền nhà|tiền phòng|điện|nước sinh hoạt|internet|wifi|phòng trọ|phòng|nội thất/i],
+  ['Hóa đơn', /hóa đơn|điện thoại|điện|nước|internet|wifi|cước|nạp tiền/i],
+  ['Sức khỏe', /thuốc|khám|bệnh viện|y tế|nha khoa|vitamin|bác sĩ/i],
+  ['Mua sắm', /mua sắm|shopee|lazada|tiki|quần áo|giày|túi|mỹ phẩm|đồ dùng/i],
+  ['Học tập', /học|sách|khóa học|course|học phí|đào tạo/i],
+  ['Giải trí', /giải trí|phim|game|netflix|spotify|du lịch|karaoke/i],
+  ['Gia đình', /gia đình|bố|mẹ|ba|má|con|vợ|chồng|em|anh|chị/i],
+  ['Đầu tư', /đầu tư|cổ phiếu|chứng khoán|quỹ|crypto/i],
+  ['Quà tặng', /quà|sinh nhật|cưới|mừng/i]
+];
+
 /**
- * Tự động phân loại danh mục
+ * Tự động phân loại danh mục (tối ưu hiệu năng, dùng regex tĩnh)
  */
 function detectCategory_(note, type) {
   const text = String(note || '').toLowerCase();
 
   if (type === 'Thu') {
-    if (/lương|salary|payroll/.test(text)) return 'Lương';
-    if (/thưởng|bonus/.test(text)) return 'Thưởng';
-    if (/bán|sale|bán hàng|freelance|dự án/.test(text)) return 'Thu nhập khác';
-    if (/lãi|tiết kiệm|cổ tức|đầu tư/.test(text)) return 'Đầu tư';
+    if (/lương|salary|payroll/i.test(text)) return 'Lương';
+    if (/thưởng|bonus/i.test(text)) return 'Thưởng';
+    if (/bán|sale|bán hàng|freelance|dự án/i.test(text)) return 'Thu nhập khác';
+    if (/lãi|tiết kiệm|cổ tức|đầu tư/i.test(text)) return 'Đầu tư';
     return 'Thu nhập khác';
   }
 
-  const rules = [
-    ['Ăn uống', /ăn|cơm|phở|bún|mì|trưa|sáng|tối|nhà hàng|quán|đồ ăn|food|bánh|lẩu|nướng/],
-    ['Cà phê & đồ uống', /cà phê|cafe|trà sữa|nước uống|bia|đồ uống|sinh tố|nước ép/],
-    ['Di chuyển', /xăng|grab|taxi|be\b|go\b|xe|ship|gửi xe|vé xe|bus|xe buýt|bảo dưỡng/],
-    ['Nhà ở', /thuê nhà|tiền nhà|điện|nước sinh hoạt|internet|wifi|phòng trọ|nội thất/],
-    ['Hóa đơn', /hóa đơn|điện thoại|điện|nước|internet|wifi|cước|nạp tiền/],
-    ['Sức khỏe', /thuốc|khám|bệnh viện|y tế|nha khoa|vitamin|bác sĩ/],
-    ['Mua sắm', /mua sắm|shopee|lazada|tiki|quần áo|giày|túi|mỹ phẩm|đồ dùng/],
-    ['Học tập', /học|sách|khóa học|course|học phí|đào tạo/],
-    ['Giải trí', /giải trí|phim|game|netflix|spotify|du lịch|karaoke/],
-    ['Gia đình', /gia đình|bố|mẹ|ba|má|con|vợ|chồng|em|anh|chị/],
-    ['Đầu tư', /đầu tư|cổ phiếu|chứng khoán|quỹ|crypto/],
-    ['Quà tặng', /quà|sinh nhật|cưới|mừng/]
-  ];
-
-  for (let i = 0; i < rules.length; i++) {
-    if (rules[i][1].test(text)) return rules[i][0];
+  for (let i = 0; i < EXPENSE_RULES_STATIC.length; i++) {
+    if (EXPENSE_RULES_STATIC[i][1].test(text)) return EXPENSE_RULES_STATIC[i][0];
   }
 
   return 'Khác';
@@ -799,30 +779,37 @@ function getTransactionsInRange(startIso, endIso) {
 
   if (matchedIndices.length === 0) return [];
 
-  // 2. Đọc theo khối nếu các dòng gần nhau
-  const minIdx = matchedIndices[0];
-  const maxIdx = matchedIndices[matchedIndices.length - 1];
-  const rowSpan = maxIdx - minIdx + 1;
+  // 2. Đọc theo cụm (Clustered Batch Read) tối ưu hóa số lần gọi Google Sheets API
+  // Gom các dòng kế tiếp nhau (khoảng cách <= 5 dòng) vào chung 1 khối
+  const clusters = [];
+  let curCluster = { start: matchedIndices[0], end: matchedIndices[0], indices: [matchedIndices[0]] };
 
-  if (rowSpan <= Math.max(matchedIndices.length * 2, 50)) {
-    const startRow = 2 + minIdx;
-    const allValues = sheet.getRange(startRow, 1, rowSpan, HEADERS.length).getValues();
-    const matchedSet = new Set(matchedIndices.map(idx => idx - minIdx));
-    const selectedRows = [];
-    for (let k = 0; k < allValues.length; k++) {
-      if (matchedSet.has(k)) {
-        selectedRows.push(allValues[k]);
+  for (let i = 1; i < matchedIndices.length; i++) {
+    const idx = matchedIndices[i];
+    if (idx - curCluster.end <= 5) {
+      curCluster.end = idx;
+      curCluster.indices.push(idx);
+    } else {
+      clusters.push(curCluster);
+      curCluster = { start: idx, end: idx, indices: [idx] };
+    }
+  }
+  clusters.push(curCluster);
+
+  const selectedRows = [];
+  clusters.forEach(cluster => {
+    const startRow = 2 + cluster.start;
+    const span = cluster.end - cluster.start + 1;
+    const blockValues = sheet.getRange(startRow, 1, span, HEADERS.length).getValues();
+    const matchSubSet = new Set(cluster.indices.map(id => id - cluster.start));
+    for (let k = 0; k < blockValues.length; k++) {
+      if (matchSubSet.has(k)) {
+        selectedRows.push(blockValues[k]);
       }
     }
-    return rowsToTransactions_(selectedRows);
-  } else {
-    const selectedRows = [];
-    matchedIndices.forEach(idx => {
-      const rowVal = sheet.getRange(2 + idx, 1, 1, HEADERS.length).getValues()[0];
-      selectedRows.push(rowVal);
-    });
-    return rowsToTransactions_(selectedRows);
-  }
+  });
+
+  return rowsToTransactions_(selectedRows);
 }
 
 /**
