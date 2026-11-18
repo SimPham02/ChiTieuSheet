@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <base target="_top">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <style>
     :root {
       --bg: #0b0f19;
@@ -19,11 +19,11 @@
       --primary: #3b82f6;
       --primary-glow: rgba(59, 130, 246, 0.16);
       --green: #34d399;
-      --green-bg: rgba(16, 185, 129, 0.14);
-      --green-border: rgba(16, 185, 129, 0.32);
+      --green-bg: rgba(16, 185, 129, 0.15);
+      --green-border: rgba(16, 185, 129, 0.35);
       --red: #f87171;
-      --red-bg: rgba(239, 68, 68, 0.14);
-      --red-border: rgba(239, 68, 68, 0.32);
+      --red-bg: rgba(239, 68, 68, 0.15);
+      --red-border: rgba(239, 68, 68, 0.35);
       --radius-lg: 20px;
       --radius-md: 12px;
     }
@@ -61,7 +61,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -72,14 +72,14 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
     .quick-icon {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
       background: var(--primary-glow);
       color: var(--primary);
       display: grid;
       place-items: center;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       flex-shrink: 0;
     }
@@ -98,9 +98,10 @@
       color: #fff;
       font-size: 13px;
       font-weight: 700;
-      padding: 8px 15px;
+      padding: 8px 14px;
       border-radius: 10px;
       white-space: nowrap;
+      flex-shrink: 0;
       transition: opacity .15s;
     }
     .quick-btn:hover { opacity: .92; }
@@ -110,10 +111,10 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 10px 18px;
+      padding: 10px 16px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
     .stat-item {
@@ -124,18 +125,18 @@
     }
     .stat-item:not(:first-child) {
       border-left: 1px solid var(--line);
-      padding-left: 14px;
+      padding-left: 12px;
     }
     .stat-label {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 10.5px;
+      font-weight: 700;
       color: var(--muted-light);
       white-space: nowrap;
     }
     .stat-val {
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 800;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -149,18 +150,18 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 10px 16px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 16px;
       flex-wrap: wrap;
     }
     .nav-left, .nav-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .nav-icon-btn {
       width: 36px;
@@ -172,6 +173,7 @@
       display: grid;
       place-items: center;
       font-size: 15px;
+      flex-shrink: 0;
       transition: .16s ease;
     }
     .nav-icon-btn:hover {
@@ -183,11 +185,12 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .month-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
-      min-width: 140px;
+      min-width: 132px;
       text-align: center;
       letter-spacing: -0.2px;
+      white-space: nowrap;
     }
     .today-pill-btn {
       border: 1px solid var(--line-light);
@@ -195,8 +198,10 @@
       color: var(--text);
       font-size: 12px;
       font-weight: 700;
-      padding: 8px 14px;
+      padding: 8px 13px;
       border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
       transition: .16s ease;
     }
     .today-pill-btn:hover {
@@ -215,12 +220,14 @@
     .view-tab {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 13px;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 12px;
       border-radius: 9px;
       font-size: 12.5px;
       font-weight: 700;
       color: var(--muted-light);
+      white-space: nowrap;
       transition: .16s ease;
     }
     .view-tab:hover { color: var(--text); }
@@ -246,7 +253,7 @@
     }
     .cal-weekdays {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 10px;
       text-align: center;
@@ -254,15 +261,17 @@
     .cal-weekday {
       font-size: 11.5px;
       font-weight: 800;
-      letter-spacing: .5px;
+      letter-spacing: .4px;
       color: var(--muted-light);
       padding: 4px 0;
+      white-space: nowrap;
     }
     .cal-weekday.weekend { color: var(--red); }
+    .cal-weekday .wd-short { display: none; }
 
     .cal-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
     }
     .cal-cell {
@@ -270,7 +279,7 @@
       border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: var(--radius-md);
       min-height: 94px;
-      padding: 10px;
+      padding: 9px 8px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -280,6 +289,7 @@
       position: relative;
       overflow: hidden;
       user-select: none;
+      min-width: 0;
     }
     .cal-cell:hover {
       background: var(--cell-hover);
@@ -302,29 +312,32 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 2px;
     }
     .day-num {
       font-size: 13.5px;
       font-weight: 800;
       color: var(--text);
       line-height: 1;
+      flex-shrink: 0;
     }
     .cal-cell.other-month .day-num { color: var(--muted); }
     .cal-cell.today .day-num {
-      width: 26px;
-      height: 26px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
       background: var(--primary);
       color: #fff;
       display: inline-grid;
       place-items: center;
-      font-size: 12.5px;
+      font-size: 12px;
       box-shadow: 0 2px 8px rgba(59, 130, 246, 0.45);
     }
     .cell-count {
       font-size: 10px;
       font-weight: 700;
       color: var(--muted);
+      white-space: nowrap;
     }
 
     .cell-pills {
@@ -332,12 +345,13 @@
       flex-direction: column;
       gap: 4px;
       align-items: flex-start;
+      width: 100%;
     }
     .day-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
@@ -407,7 +421,7 @@
       padding: 10px 8px;
       border-bottom: 1px solid rgba(30, 41, 59, 0.65);
       border-radius: 10px;
-      gap: 12px;
+      gap: 10px;
       transition: background .14s;
     }
     .tx-row:hover { background: var(--cell); }
@@ -415,7 +429,7 @@
     .tx-left {
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 10px;
       min-width: 0;
       cursor: pointer;
       flex: 1;
@@ -451,17 +465,19 @@
       border-radius: 999px;
       font-size: 10.5px;
       font-weight: 600;
+      white-space: nowrap;
     }
     .tx-right {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      flex-shrink: 0;
     }
     .tx-amount {
       font-size: 13.5px;
       font-weight: 800;
       white-space: nowrap;
-      margin-right: 4px;
+      margin-right: 2px;
     }
     .tx-amount.thu { color: var(--green); }
     .tx-amount.chi { color: var(--red); }
@@ -534,7 +550,7 @@
       padding: 14px;
     }
     .kpi-label { font-size: 11px; color: var(--muted-light); font-weight: 600; }
-    .kpi-val { font-size: 17px; font-weight: 800; margin-top: 6px; }
+    .kpi-val { font-size: 16px; font-weight: 800; margin-top: 6px; }
 
     .empty {
       text-align: center;
@@ -610,24 +626,129 @@
       pointer-events: none;
       transition: .2s ease;
       z-index: 50;
+      max-width: 92vw;
+      text-align: center;
     }
     .toast.error { background: #7f1d1d; border-color: #b91c1c; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ===== RESPONSIVE ĐIỆN THOẠI (CHUẨN MOBILE-FIRST) ===== */
     @media (max-width: 860px) {
       .top-bar, .stats-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
-      .app { padding: 14px 10px 36px; }
-      .calendar-card { padding: 10px; }
-      .cal-grid, .cal-weekdays { gap: 4px; }
-      .cal-cell { min-height: 72px; padding: 6px 5px; border-radius: 9px; }
-      .day-num { font-size: 12px; }
-      .cal-cell.today .day-num { width: 22px; height: 22px; font-size: 11px; }
-      .day-pill { padding: 2px 5px; font-size: 9.5px; gap: 3px; }
-      .day-pill .dot { width: 5px; height: 5px; }
-      .month-title { min-width: 115px; font-size: 15px; }
-      .stat-val { font-size: 14px; }
+      .app { padding: 12px 10px 36px; }
+      .top-bar { gap: 10px; margin-bottom: 12px; }
+
+      /* 1. Dải 3 chỉ số: Thu gọn font & vách ngăn để không bị cắt "..." */
+      .summary-strip {
+        padding: 10px 10px;
+        gap: 6px;
+      }
+      .stat-item:not(:first-child) {
+        padding-left: 8px;
+      }
+      .stat-label {
+        font-size: 9.5px;
+        letter-spacing: -0.2px;
+      }
+      .stat-val {
+        font-size: 13px;
+        letter-spacing: -0.5px;
+      }
+
+      /* 2. Thanh điều hướng: Chia 2 dòng cân đối, tuyệt đối không gãy chữ */
+      .nav-bar {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .nav-left {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .month-title {
+        font-size: 15px;
+        min-width: 0;
+        flex: 1;
+      }
+      .today-pill-btn {
+        padding: 7px 11px;
+        font-size: 11.5px;
+      }
+      .nav-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .view-tabs {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .view-tab {
+        padding: 7px 6px;
+        font-size: 11.5px;
+        gap: 4px;
+      }
+
+      /* 3. Lịch tháng trên Mobile: T2..CN 1 hàng, ẩn chữ "X mục" và chấm tròn để vừa khít số tiền */
+      .calendar-card {
+        padding: 10px 8px;
+        border-radius: 16px;
+      }
+      .cal-weekdays {
+        gap: 4px;
+        margin-bottom: 6px;
+      }
+      .cal-weekday .wd-full { display: none; }
+      .cal-weekday .wd-short { display: inline; font-size: 11px; }
+
+      .cal-grid { gap: 4px; }
+      .cal-cell {
+        min-height: 70px;
+        padding: 5px 3px;
+        border-radius: 9px;
+        gap: 4px;
+      }
+      .cell-top {
+        justify-content: center;
+      }
+      .day-num {
+        font-size: 12px;
+      }
+      .cal-cell.today .day-num {
+        width: 21px;
+        height: 21px;
+        font-size: 11px;
+      }
+      .cell-count {
+        display: none;
+      }
+      .cell-pills {
+        gap: 3px;
+        align-items: stretch;
+      }
+      .day-pill {
+        width: 100%;
+        justify-content: center;
+        padding: 2px 2px;
+        font-size: 9.5px;
+        letter-spacing: -0.4px;
+        border-radius: 5px;
+        gap: 0;
+      }
+      .day-pill .dot {
+        display: none;
+      }
+
+      .day-detail-card, .view-card {
+        padding: 14px 12px;
+        border-radius: 16px;
+      }
+      .detail-title { font-size: 14px; }
+      .tx-row { padding: 9px 4px; }
     }
   </style>
 </head>
@@ -683,13 +804,13 @@
   <div id="viewCalendar">
     <div class="calendar-card" id="calendarCard">
       <div class="cal-weekdays">
-        <div class="cal-weekday">THỨ 2</div>
-        <div class="cal-weekday">THỨ 3</div>
-        <div class="cal-weekday">THỨ 4</div>
-        <div class="cal-weekday">THỨ 5</div>
-        <div class="cal-weekday">THỨ 6</div>
-        <div class="cal-weekday weekend">THỨ 7</div>
-        <div class="cal-weekday weekend">CHỦ NHẬT</div>
+        <div class="cal-weekday"><span class="wd-full">THỨ 2</span><span class="wd-short">T2</span></div>
+        <div class="cal-weekday"><span class="wd-full">THỨ 3</span><span class="wd-short">T3</span></div>
+        <div class="cal-weekday"><span class="wd-full">THỨ 4</span><span class="wd-short">T4</span></div>
+        <div class="cal-weekday"><span class="wd-full">THỨ 5</span><span class="wd-short">T5</span></div>
+        <div class="cal-weekday"><span class="wd-full">THỨ 6</span><span class="wd-short">T6</span></div>
+        <div class="cal-weekday weekend"><span class="wd-full">THỨ 7</span><span class="wd-short">T7</span></div>
+        <div class="cal-weekday weekend"><span class="wd-full">CHỦ NHẬT</span><span class="wd-short">CN</span></div>
       </div>
       <div id="calendarGrid" class="cal-grid"></div>
     </div>
@@ -709,7 +830,7 @@
   <!-- CHẾ ĐỘ 2: DANH SÁCH GIAO DỊCH TRONG THÁNG -->
   <div id="viewList" class="view-card" style="display:none">
     <div class="filter-bar">
-      <input id="searchInput" class="input-field" style="flex:1;min-width:200px"
+      <input id="searchInput" class="input-field" style="flex:1;min-width:180px"
              placeholder="Tìm theo nội dung hoặc danh mục..." oninput="renderListView()">
       <select id="categorySelect" class="input-field" onchange="renderListView()">
         <option value="">Tất cả danh mục</option>
@@ -772,7 +893,7 @@
       <input type="text" id="editNote" class="input-field" required>
     </div>
     <div class="modal-actions">
-      <button type="button" class="btn-secondary" onclick="closeEditModal()">Hủy (Esc)</button>
+      <button type="button" class="btn-secondary" onclick="closeEditModal()">Hủy</button>
       <button type="submit" id="saveEditBtn" class="btn-primary">Lưu thay đổi</button>
     </div>
   </form>
@@ -921,7 +1042,6 @@ function loadMonthData(force, onDone) {
     .withSuccessHandler(rows => {
       const list = Array.isArray(rows) ? rows : [];
       monthCache[cacheKey] = list;
-      // Chống Race Condition: Bỏ qua nếu người dùng đã chuyển sang tháng khác
       if (requestId !== activeRequestId) return;
       if (calCard) calCard.classList.remove('is-loading');
       monthTransactions = list;
@@ -1010,7 +1130,7 @@ function renderCalendarGrid() {
 
   const firstDay = new Date(viewYear, viewMonth, 1);
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const startOffset = (firstDay.getDay() + 6) % 7; // Thứ 2 = 0 ... CN = 6
+  const startOffset = (firstDay.getDay() + 6) % 7;
   const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
   const gridStartDate = new Date(viewYear, viewMonth, 1 - startOffset);
   const todayKey = toDateKey(new Date());
@@ -1325,7 +1445,6 @@ function escapeHtml(s) {
   return d.innerHTML;
 }
 
-// ===== EVENT DELEGATION CHUẨN SENIOR (KHÔNG DÙNG INLINE ONCLICK ĐỘNG) =====
 document.getElementById('calendarGrid').addEventListener('click', e => {
   const cell = e.target.closest('.cal-cell');
   if (!cell) return;
