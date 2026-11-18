@@ -1,1109 +1,1250 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root{
-      --bg:#f6f7f9;
-      --surface:#ffffff;
-      --surface-soft:#f8fafc;
-      --text:#18212f;
-      --muted:#7a8494;
-      --primary:#315b93;
-      --primary-dark:#203d66;
-      --green:#138b63;
-      --red:#d95757;
-      --line:#e8ecf1;
-      --shadow:0 8px 24px rgba(24,33,47,.055);
-      --shadow-lg:0 16px 42px rgba(24,33,47,.10);
+    :root {
+      --bg: #0b0f19;
+      --panel: #111726;
+      --cell: #151d2e;
+      --cell-hover: #1a2438;
+      --cell-muted: #0d1320;
+      --surface-soft: #1a2234;
+      --line: #1e293b;
+      --line-light: #283548;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --muted-light: #94a3b8;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.16);
+      --green: #34d399;
+      --green-bg: rgba(16, 185, 129, 0.14);
+      --green-border: rgba(16, 185, 129, 0.32);
+      --red: #f87171;
+      --red-bg: rgba(239, 68, 68, 0.14);
+      --red-border: rgba(239, 68, 68, 0.32);
+      --radius-lg: 20px;
+      --radius-md: 12px;
     }
 
-    *{box-sizing:border-box}
-
-    html{background:var(--bg)}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      background:
-        radial-gradient(circle at 50% -10%,rgba(49,91,147,.055),transparent 34%),
-        var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
+    * { box-sizing: border-box; }
+    html { color-scheme: dark; background: var(--bg); }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08), transparent 45%), var(--bg);
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      -webkit-font-smoothing: antialiased;
     }
 
-    button,input,select{font:inherit}
-    button{border:0;cursor:pointer}
-    input,select{color:var(--text)}
+    button, input, select { font: inherit; color: inherit; }
+    button { border: 0; cursor: pointer; background: none; }
 
-    .app{max-width:1120px;margin:0 auto;padding:30px 28px 42px}
+    .app {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 22px 20px 48px;
+    }
 
-    .header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:20px;
-      margin-bottom:22px;
+    /* ===== TOP BAR: NHẬP NHANH & TÓM TẮT ===== */
+    .top-bar {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+      align-items: stretch;
     }
-    .title{
-      font-size:28px;
-      line-height:1.15;
-      font-weight:800;
-      letter-spacing:-.6px;
-    }
-    .subtitle{
-      color:var(--muted);
-      font-size:14px;
-      margin-top:6px;
-    }
-    .date-row{display:flex;align-items:center;gap:8px}
-    .date{
-      background:var(--surface);
-      border:1px solid var(--line);
-      padding:9px 13px;
-      border-radius:11px;
-      color:#667184;
-      font-size:13px;
-      white-space:nowrap;
-      box-shadow:0 3px 12px rgba(24,33,47,.035);
-    }
-    .refresh-btn{
-      width:38px;
-      height:38px;
-      min-width:38px;
-      display:grid;
-      place-items:center;
-      background:var(--surface);
-      color:#687487;
-      border:1px solid var(--line);
-      border-radius:11px;
-      font-size:17px;
-      box-shadow:0 3px 12px rgba(24,33,47,.035);
-      transition:.18s ease;
-    }
-    .refresh-btn:hover{background:#f2f5f8;color:var(--primary);border-color:#dce3eb}
-    .refresh-btn.spinning{animation:spin .8s linear infinite}
-    .sync-dot{width:7px;height:7px;border-radius:50%;background:#e5a327;animation:pulse 1.1s ease-in-out infinite}
-    .sync-progress{font-size:11px;color:#929aa7;font-weight:650;white-space:nowrap}
-    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
 
-    .hero{
-      background:linear-gradient(135deg,#203d66 0%,#315b93 100%);
-      color:#fff;
-      border-radius:22px;
-      padding:28px;
-      box-shadow:0 14px 34px rgba(32,61,102,.18);
-      margin-bottom:18px;
+    .quick-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .18s ease, box-shadow .18s ease;
     }
-    .hero-label{
-      opacity:.72;
-      font-size:11px;
-      font-weight:750;
-      letter-spacing:.7px;
+    .quick-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
-    .hero-number{
-      font-size:40px;
-      line-height:1.1;
-      font-weight:800;
-      letter-spacing:-1px;
-      margin:6px 0 20px;
+    .quick-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-glow);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      font-weight: 800;
+      flex-shrink: 0;
     }
-    .input-row{position:relative}
-    .input{
-      width:100%;
-      border:1px solid rgba(255,255,255,.16);
-      outline:none;
-      background:rgba(255,255,255,.12);
-      color:#fff;
-      border-radius:13px;
-      padding:16px 48px 16px 17px;
-      font-size:16px;
-      backdrop-filter:blur(8px);
-      transition:.18s ease;
+    .quick-input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 14px;
+      color: var(--text);
+      min-width: 0;
     }
-    .input:focus{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.3)}
-    .input::placeholder{color:rgba(255,255,255,.6)}
-    .input:disabled{opacity:.6}
-    .spinner{
-      position:absolute;
-      right:15px;
-      top:50%;
-      transform:translateY(-50%);
-      width:19px;
-      height:19px;
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,.28);
-      border-top-color:#fff;
-      display:none;
-      animation:spin .7s linear infinite;
+    .quick-input::placeholder { color: var(--muted); }
+    .quick-btn {
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 15px;
+      border-radius: 10px;
+      white-space: nowrap;
+      transition: opacity .15s;
     }
-    .spinner.show{display:block}
-    @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
-    .hint{margin-top:9px;opacity:.62;font-size:12px}
+    .quick-btn:hover { opacity: .92; }
+    .quick-btn:disabled { opacity: .5; cursor: wait; }
 
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
-      margin-bottom:14px;
+    .summary-strip {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      align-items: center;
     }
-    .card{
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:17px 18px;
-      box-shadow:var(--shadow);
-      transition:.18s ease;
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
     }
-    .card:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
-    .card-label{
-      color:#8a93a1;
-      font-size:10px;
-      font-weight:750;
-      margin-bottom:8px;
-      letter-spacing:.45px;
+    .stat-item:not(:first-child) {
+      border-left: 1px solid var(--line);
+      padding-left: 14px;
     }
-    .card-value{font-size:22px;line-height:1.2;font-weight:800;letter-spacing:-.3px}
-    .income{color:var(--green)}
-    .expense{color:var(--red)}
-    .balance{color:var(--primary)}
-    .card-value.dim{opacity:.35}
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted-light);
+      white-space: nowrap;
+    }
+    .stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stat-val.in { color: var(--green); }
+    .stat-val.out { color: var(--red); }
+    .stat-val.bal { color: #60a5fa; }
 
-    .toolbar{
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:15px;
-      padding:6px;
-      display:flex;
-      gap:4px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-      box-shadow:var(--shadow);
+    /* ===== THANH ĐIỀU HƯỚNG LỊCH ===== */
+    .nav-bar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
-    .period-btn{
-      background:transparent;
-      color:#5e6b7d;
-      padding:9px 14px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:700;
-      transition:.16s ease;
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .period-btn:hover{background:#f3f6f9;color:#34445b}
-    .period-btn.active{background:var(--primary);color:#fff}
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--line-light);
+      background: var(--cell);
+      color: var(--muted-light);
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      transition: .16s ease;
+    }
+    .nav-icon-btn:hover {
+      background: var(--cell-hover);
+      color: var(--text);
+      border-color: #3b4c66;
+    }
+    .nav-icon-btn.spinning { animation: spin .75s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .filter-extra{
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:15px;
-      padding:11px 13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-      box-shadow:var(--shadow);
+    .month-title {
+      font-size: 17px;
+      font-weight: 800;
+      min-width: 140px;
+      text-align: center;
+      letter-spacing: -0.2px;
     }
-    .filter-input{
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:9px 11px;
-      background:var(--surface-soft);
-      color:var(--text);
-      outline:none;
-      transition:.16s ease;
+    .today-pill-btn {
+      border: 1px solid var(--line-light);
+      background: var(--cell);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: .16s ease;
     }
-    .filter-input:focus{border-color:#b9c9dc;background:#fff;box-shadow:0 0 0 3px rgba(49,91,147,.07)}
-    .filter-sep{color:var(--muted);font-size:12px;font-weight:700}
-    .apply-btn{
-      background:var(--primary);
-      color:#fff;
-      padding:9px 15px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:750;
-      transition:.16s ease;
+    .today-pill-btn:hover {
+      background: var(--cell-hover);
+      border-color: var(--primary);
     }
-    .apply-btn:hover{background:var(--primary-dark)}
-    .cancel-btn{
-      background:#eef1f5;
-      color:#526075;
-      padding:9px 15px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:750;
-      transition:.16s ease;
-    }
-    .cancel-btn:hover{background:#e4e9ef}
-    .period-label{font-size:12px;color:var(--muted);font-weight:650;margin-left:auto;white-space:nowrap}
 
-    .dashboard{
-      display:grid;
-      grid-template-columns:1.08fr .92fr;
-      gap:14px;
-      margin-bottom:14px;
+    .view-tabs {
+      display: inline-flex;
+      background: #0b101b;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 3px;
+      gap: 3px;
     }
-    .panel,.transactions{
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:19px;
-      box-shadow:var(--shadow);
+    .view-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted-light);
+      transition: .16s ease;
     }
-    .panel{position:relative}
-    .panel.loading{opacity:.5;pointer-events:none}
-    .section-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:14px;
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      background: var(--surface-soft);
+      color: var(--text);
+      border: 1px solid var(--line-light);
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
     }
-    .section-title{font-weight:800;font-size:16px;letter-spacing:-.2px}
-    .section-meta{font-size:11px;color:var(--muted);white-space:nowrap}
 
-    .category-list{display:flex;flex-direction:column;gap:4px}
-    .category-row{
-      display:grid;
-      grid-template-columns:34px 1fr auto;
-      align-items:center;
-      gap:10px;
-      cursor:pointer;
-      border-radius:11px;
-      padding:7px 8px;
-      margin:0 -8px;
-      transition:.15s ease;
-      border:1px solid transparent;
+    /* ===== LỊCH THÁNG 7 CỘT ===== */
+    .calendar-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: opacity .18s ease;
     }
-    .category-row:hover{background:#f7f9fb}
-    .category-row.active{background:#f0f5fb;border-color:#dbe6f1}
-    .category-icon{
-      width:34px;height:34px;border-radius:10px;
-      display:grid;place-items:center;font-size:15px;
+    .calendar-card.is-loading {
+      opacity: .55;
+      pointer-events: none;
     }
-    .category-name{font-size:13px;font-weight:700;margin-bottom:5px}
-    .category-bar{height:6px;background:#edf0f4;border-radius:99px;overflow:hidden}
-    .category-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#315b93,#6b93c4);transition:width .3s}
-    .category-amount{font-size:12px;font-weight:800;white-space:nowrap}
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .cal-weekday {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: var(--muted-light);
+      padding: 4px 0;
+    }
+    .cal-weekday.weekend { color: var(--red); }
 
-    .insight{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-    .insight-item{
-      padding:12px 13px;
-      border:1px solid var(--line);
-      border-radius:13px;
-      background:#fafbfd;
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
     }
-    .insight-label{font-size:10px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.2px}
-    .insight-value{font-size:17px;font-weight:800;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .compare-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      padding:11px 13px;
-      border-radius:12px;
-      background:#fafbfd;
-      border:1px solid var(--line);
+    .cal-cell {
+      background: var(--cell);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-md);
+      min-height: 94px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
     }
-    .compare-label{font-size:11px;color:var(--muted);font-weight:700}
-    .compare-value{font-size:13px;font-weight:800;white-space:nowrap}
-    .compare-value.up{color:var(--red)}
-    .compare-value.down{color:var(--green)}
-    .compare-value.flat{color:var(--muted)}
+    .cal-cell:hover {
+      background: var(--cell-hover);
+      border-color: var(--line-light);
+    }
+    .cal-cell.other-month {
+      background: var(--cell-muted);
+      opacity: .42;
+    }
+    .cal-cell.today {
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.20) 0%, rgba(29, 78, 216, 0.08) 100%);
+      border-color: #2563eb;
+    }
+    .cal-cell.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary) inset;
+    }
 
-    .trend{
-      display:flex;
-      align-items:flex-end;
-      gap:7px;
-      height:155px;
-      padding-top:8px;
-      overflow-x:auto;
+    .cell-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .trend-col{
-      height:100%;
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      align-items:center;
-      gap:6px;
-      min-width:18px;
+    .day-num {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
     }
-    .trend-bar-wrap{height:116px;width:100%;display:flex;align-items:flex-end;justify-content:center}
-    .trend-bar{
-      width:min(25px,70%);
-      border-radius:7px 7px 3px 3px;
-      background:linear-gradient(180deg,#6b93c4,#315b93);
-      min-height:3px;
-      transition:height .3s;
+    .cal-cell.other-month .day-num { color: var(--muted); }
+    .cal-cell.today .day-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: inline-grid;
+      place-items: center;
+      font-size: 12.5px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.45);
     }
-    .trend-label{font-size:9px;color:#9aa2af;white-space:nowrap}
+    .cell-count {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+    }
 
-    .search-row{display:flex;gap:8px;align-items:center;margin-bottom:11px;flex-wrap:wrap}
-    .search-input{flex:1;min-width:180px}
-    .category-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      background:#edf3fa;
-      color:var(--primary);
-      padding:8px 11px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:750;
-      white-space:nowrap;
+    .cell-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
     }
-    .category-chip span{cursor:pointer;opacity:.7;font-weight:850}
-    .category-chip span:hover{opacity:1}
-    .export-btn{
-      background:#eef1f5;
-      color:#56647a;
-      padding:8px 12px;
-      border-radius:9px;
-      font-size:11px;
-      font-weight:750;
-      white-space:nowrap;
-      transition:.16s ease;
+    .day-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
     }
-    .export-btn:hover{background:#e4e9ef}
+    .day-pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .day-pill.chi {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+    }
+    .day-pill.chi .dot { background: var(--red); }
+    .day-pill.thu {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: var(--green);
+    }
+    .day-pill.thu .dot { background: var(--green); }
 
-    .transaction{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:12px 6px;
-      border-bottom:1px solid #edf0f4;
-      gap:10px;
-      border-radius:10px;
-      transition:.15s ease;
+    /* ===== KHUNG CHI TIẾT NGÀY ĐANG CHỌN ===== */
+    .day-detail-card, .view-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
     }
-    .transaction:hover{background:#fafbfd}
-    .transaction:last-child{border-bottom:0}
-    .transaction-left{display:flex;align-items:center;gap:11px;min-width:0;cursor:pointer}
-    .icon{width:36px;height:36px;min-width:36px;border-radius:10px;display:grid;place-items:center;font-size:16px}
-    .note{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .meta{display:flex;align-items:center;gap:7px;margin-top:3px;min-width:0}
-    .time{font-size:11px;color:#9aa2af}
-    .tag{font-size:9px;font-weight:750;padding:3px 6px;border-radius:999px;background:#eef2f6;color:#607089;white-space:nowrap}
-    .transaction-right{display:flex;align-items:center;gap:2px}
-    .amount{font-size:13px;font-weight:800;white-space:nowrap}
-    .amount.thu{color:var(--green)}
-    .amount.chi{color:var(--red)}
-    .icon-btn{
-      background:transparent;
-      color:#b8c0cb;
-      padding:6px 7px;
-      border-radius:8px;
-      font-weight:700;
-      line-height:1;
-      font-size:13px;
-      transition:.15s ease;
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
     }
-    .icon-btn.edit:hover{background:#edf3fa;color:var(--primary)}
-    .icon-btn.delete:hover{background:#fceded;color:var(--red)}
-    .transaction.removing{opacity:0;transform:translateX(12px);transition:opacity .2s,transform .2s}
+    .detail-title {
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-badges {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .detail-badges .in { color: var(--green); }
+    .detail-badges .out { color: var(--red); }
 
-    .empty{text-align:center;padding:36px;color:#9aa2af;font-size:13px}
-    .skeleton{
-      background:linear-gradient(90deg,#f0f2f5 25%,#e7eaf0 37%,#f0f2f5 63%);
-      background-size:400% 100%;
-      animation:shimmer 1.4s ease infinite;
-      border-radius:9px;
+    /* ===== DANH SÁCH GIAO DỊCH ===== */
+    .tx-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.65);
+      border-radius: 10px;
+      gap: 12px;
+      transition: background .14s;
     }
-    @keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
-    .skeleton-row{display:flex;align-items:center;gap:12px;padding:12px 4px}
+    .tx-row:hover { background: var(--cell); }
+    .tx-row:last-child { border-bottom: 0; }
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+    .tx-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .tx-note {
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tx-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 3px;
+      font-size: 11.5px;
+      color: var(--muted-light);
+    }
+    .tx-tag {
+      background: var(--surface-soft);
+      border: 1px solid var(--line-light);
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tx-amount {
+      font-size: 13.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+    .tx-amount.thu { color: var(--green); }
+    .tx-amount.chi { color: var(--red); }
 
-    .toast{
-      position:fixed;
-      bottom:22px;
-      left:50%;
-      transform:translateX(-50%) translateY(16px);
-      background:#18212f;
-      color:#fff;
-      padding:11px 16px;
-      border-radius:11px;
-      opacity:0;
-      pointer-events:none;
-      transition:.22s ease;
-      max-width:90vw;
-      text-align:center;
-      z-index:20;
-      font-size:13px;
-      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    .act-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      transition: .14s;
     }
-    .toast.error{background:#c74242}
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .act-btn:hover { background: var(--surface-soft); color: var(--text); }
+    .act-btn.del:hover { background: var(--red-bg); color: var(--red); }
 
-    .modal-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(18,27,40,.48);
-      backdrop-filter:blur(3px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:30;
-      padding:20px;
+    /* ===== TAB DANH SÁCH & THỐNG KÊ ===== */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
-    .modal-overlay.show{display:flex}
-    .modal{
-      background:var(--surface);
-      border:1px solid rgba(255,255,255,.7);
-      border-radius:18px;
-      padding:22px;
-      width:100%;
-      max-width:390px;
-      box-shadow:0 24px 60px rgba(10,20,40,.22);
+    .input-field {
+      background: var(--cell);
+      border: 1px solid var(--line-light);
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
     }
-    .modal-title{font-size:17px;font-weight:800;margin-bottom:17px}
-    .modal-field{margin-bottom:13px}
-    .modal-field label{display:block;font-size:11px;font-weight:750;color:var(--muted);margin-bottom:6px}
-    .modal-field .filter-input{width:100%}
-    .type-toggle{display:flex;gap:7px}
-    .type-btn{
-      flex:1;
-      background:#eef1f5;
-      color:#536176;
-      padding:9px;
-      border-radius:9px;
-      font-size:13px;
-      font-weight:750;
-      text-align:center;
-      transition:.15s ease;
-    }
-    .type-btn.active{background:var(--primary);color:#fff}
-    .modal-actions{display:flex;gap:9px;margin-top:5px}
-    .modal-actions .apply-btn,.modal-actions .cancel-btn{flex:1;text-align:center}
+    .input-field:focus { border-color: var(--primary); }
 
-    @media(max-width:850px){
-      .cards{grid-template-columns:repeat(2,1fr)}
-      .dashboard{grid-template-columns:1fr}
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
     }
-    @media(max-width:600px){
-      .app{padding:18px 14px 30px}
-      .header{align-items:flex-start;margin-bottom:18px}
-      .title{font-size:24px}
-      .subtitle{font-size:13px}
-      .date{font-size:11px;padding:8px 10px}
-      .refresh-btn{width:36px;height:36px;min-width:36px}
-      .hero{padding:22px 18px;border-radius:18px}
-      .hero-number{font-size:33px;margin-bottom:17px}
-      .cards{gap:8px}
-      .card{padding:14px}
-      .card-label{font-size:9px}
-      .card-value{font-size:19px}
-      .toolbar{overflow-x:auto;flex-wrap:nowrap}
-      .period-btn{white-space:nowrap;padding:9px 12px}
-      .panel,.transactions{padding:16px;border-radius:16px}
-      .category-row{grid-template-columns:32px 1fr}
-      .category-amount{grid-column:2}
-      .transaction-right{gap:0}
-      .amount{font-size:12px}
-      .icon-btn{padding:6px}
-      .section-title{font-size:15px}
-      .insight-value{font-size:15px}
+    .cat-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 6px;
+    }
+    .cat-bar {
+      height: 6px;
+      background: var(--cell);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .cat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      border-radius: 99px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-content: start;
+    }
+    .kpi-box {
+      background: var(--cell);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .kpi-label { font-size: 11px; color: var(--muted-light); font-weight: 600; }
+    .kpi-val { font-size: 17px; font-weight: 800; margin-top: 6px; }
+
+    .empty {
+      text-align: center;
+      padding: 28px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ===== MODAL & TOAST ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 15, 0.72);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      padding: 16px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--line-light);
+      border-radius: 18px;
+      padding: 22px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    }
+    .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 11.5px; color: var(--muted-light); font-weight: 700; margin-bottom: 6px; }
+    .field .input-field { width: 100%; }
+    .type-switch { display: flex; gap: 8px; }
+    .type-opt {
+      flex: 1;
+      padding: 9px;
+      border-radius: 9px;
+      background: var(--cell);
+      border: 1px solid var(--line-light);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .type-opt.active.chi { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+    .type-opt.active.thu { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .btn-secondary, .btn-primary {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+    }
+    .btn-secondary { background: var(--cell); color: var(--muted-light); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:disabled { opacity: .5; cursor: wait; }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      z-index: 50;
+    }
+    .toast.error { background: #7f1d1d; border-color: #b91c1c; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 860px) {
+      .top-bar, .stats-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .app { padding: 14px 10px 36px; }
+      .calendar-card { padding: 10px; }
+      .cal-grid, .cal-weekdays { gap: 4px; }
+      .cal-cell { min-height: 72px; padding: 6px 5px; border-radius: 9px; }
+      .day-num { font-size: 12px; }
+      .cal-cell.today .day-num { width: 22px; height: 22px; font-size: 11px; }
+      .day-pill { padding: 2px 5px; font-size: 9.5px; gap: 3px; }
+      .day-pill .dot { width: 5px; height: 5px; }
+      .month-title { min-width: 115px; font-size: 15px; }
+      .stat-val { font-size: 14px; }
     }
   </style>
 </head>
 <body>
 <div class="app">
-  <header class="header">
-    <div>
-      <div class="title">Nhật ký chi tiêu</div>
-      <div class="subtitle">Ghi nhanh · Theo dõi · Tổng hợp</div>
-    </div>
-    <div class="date-row">
-      <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()" title="Làm mới dữ liệu">⟳</button>
-      <div class="date" id="today"></div>
-      <span class="sync-dot" id="syncDot" style="display:none" title="Đang tải…"></span>
-      <span class="sync-progress" id="syncProgress" style="display:none"></span>
-    </div>
-  </header>
 
-  <section class="hero">
-    <div class="hero-label">CHI TIÊU HÔM NAY</div>
-    <div class="hero-number" id="todayExpense">0 ₫</div>
-    <div class="input-row">
-      <input id="input" class="input" autocomplete="off" inputmode="text"
-             placeholder="Ví dụ: 50k ăn sáng · 120k grab"
-             onkeydown="handleInput(event)">
-      <div class="spinner" id="spinner"></div>
+  <!-- DẢI TRÊN: NHẬP NHANH & 3 CHỈ SỐ CỐT LÕI -->
+  <div class="top-bar">
+    <form class="quick-box" onsubmit="event.preventDefault(); submitQuickInput();">
+      <div class="quick-icon">₫</div>
+      <input id="quickInput" class="quick-input" autocomplete="off"
+             placeholder="Nhập nhanh: 50k ăn sáng, 120k grab, thu 15tr lương...">
+      <button type="submit" id="quickBtn" class="quick-btn">+ Lưu</button>
+    </form>
+
+    <div class="summary-strip">
+      <div class="stat-item">
+        <span class="stat-label">THU THÁNG NÀY</span>
+        <span id="monthIncome" class="stat-val in">0 ₫</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">CHI THÁNG NÀY</span>
+        <span id="monthExpense" class="stat-val out">0 ₫</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">SỐ DƯ HIỆN TẠI</span>
+        <span id="totalBalance" class="stat-val bal">0 ₫</span>
+      </div>
     </div>
-    <div class="hint">Enter để lưu · “thu 15tr lương” để ghi thu nhập</div>
-  </section>
-
-  <section class="cards">
-    <div class="card"><div class="card-label">TỔNG THU (KỲ NÀY)</div><div id="income" class="card-value income">0 ₫</div></div>
-    <div class="card"><div class="card-label">TỔNG CHI (KỲ NÀY)</div><div id="expense" class="card-value expense">0 ₫</div></div>
-    <div class="card"><div class="card-label">CÒN LẠI (TOÀN THỜI GIAN)</div><div id="balance" class="card-value balance">0 ₫</div></div>
-    <div class="card"><div class="card-label">GIAO DỊCH (KỲ NÀY)</div><div id="transactionCount" class="card-value">0</div></div>
-  </section>
-
-  <div class="toolbar">
-    <button class="period-btn active" onclick="setPeriod('today',this)">Hôm nay</button>
-    <button class="period-btn" onclick="setPeriod('week',this)">Tuần này</button>
-    <button class="period-btn" onclick="setPeriod('month',this)">Tháng này</button>
-    <button class="period-btn" onclick="setPeriod('pickMonth',this)">Theo tháng</button>
-    <button class="period-btn" onclick="setPeriod('range',this)">Khoảng ngày</button>
-    <button class="period-btn" onclick="setPeriod('all',this)">Tất cả</button>
   </div>
 
-  <div class="filter-extra" id="filterExtra" style="display:none">
-    <div id="monthPickerWrap" style="display:none;align-items:center;gap:10px">
-      <input type="month" id="monthPicker" class="filter-input" onchange="applyMonthFilter()">
+  <!-- THANH ĐIỀU HƯỚNG CHUẨN MẪU -->
+  <div class="nav-bar">
+    <div class="nav-left">
+      <button type="button" class="nav-icon-btn" onclick="changeMonth(-1)" title="Tháng trước">‹</button>
+      <div class="month-title" id="monthLabel">Tháng 11 / 2026</div>
+      <button type="button" class="nav-icon-btn" onclick="changeMonth(1)" title="Tháng sau">›</button>
+      <button type="button" class="today-pill-btn" onclick="goToday()">Tháng này</button>
+      <button type="button" class="nav-icon-btn" id="refreshBtn" onclick="manualRefresh()" title="Làm mới">⟳</button>
     </div>
-    <div id="rangePickerWrap" style="display:none;align-items:center;gap:10px;flex-wrap:wrap">
-      <input type="date" id="rangeFrom" class="filter-input">
-      <span class="filter-sep">đến</span>
-      <input type="date" id="rangeTo" class="filter-input">
-      <button class="apply-btn" onclick="applyRangeFilter()">Áp dụng</button>
+
+    <div class="nav-right">
+      <div class="view-tabs">
+        <button type="button" class="view-tab active" id="tabCalendar" onclick="switchView('calendar')">📅 Lịch tháng</button>
+        <button type="button" class="view-tab" id="tabList" onclick="switchView('list')">☰ Danh sách</button>
+        <button type="button" class="view-tab" id="tabStats" onclick="switchView('stats')">📊 Thống kê</button>
+      </div>
+      <button type="button" class="nav-icon-btn" onclick="exportCsv()" title="Xuất file CSV">⬇</button>
     </div>
-    <div class="period-label" id="periodLabel"></div>
   </div>
 
-  <section class="dashboard">
-    <div class="panel" id="categoryPanel">
-      <div class="section-head">
-        <div class="section-title">Chi tiêu theo danh mục</div>
-        <div class="section-meta" id="categoryMeta">0 danh mục</div>
+  <!-- CHẾ ĐỘ 1: LỊCH THÁNG -->
+  <div id="viewCalendar">
+    <div class="calendar-card" id="calendarCard">
+      <div class="cal-weekdays">
+        <div class="cal-weekday">THỨ 2</div>
+        <div class="cal-weekday">THỨ 3</div>
+        <div class="cal-weekday">THỨ 4</div>
+        <div class="cal-weekday">THỨ 5</div>
+        <div class="cal-weekday">THỨ 6</div>
+        <div class="cal-weekday weekend">THỨ 7</div>
+        <div class="cal-weekday weekend">CHỦ NHẬT</div>
       </div>
-      <div id="categoryList" class="category-list"></div>
+      <div id="calendarGrid" class="cal-grid"></div>
     </div>
 
-    <div class="panel" id="insightPanel">
-      <div class="section-head">
-        <div class="section-title">Tổng quan</div>
-        <div class="section-meta" id="periodMeta">Theo bộ lọc</div>
+    <!-- Chi tiết ngày đang chọn trên lịch -->
+    <div class="day-detail-card">
+      <div class="detail-header">
+        <div class="detail-title">
+          <span id="selectedDayTitle">Chi tiết ngày</span>
+        </div>
+        <div class="detail-badges" id="selectedDayTotals"></div>
       </div>
-      <div class="insight">
-        <div class="insight-item"><div class="insight-label">Chi/ngày</div><div class="insight-value" id="avgExpense">0 ₫</div></div>
-        <div class="insight-item"><div class="insight-label">Giao dịch chi</div><div class="insight-value" id="expenseCount">0</div></div>
-        <div class="insight-item"><div class="insight-label">Khoản chi lớn nhất</div><div class="insight-value" id="maxExpense">0 ₫</div></div>
-        <div class="insight-item"><div class="insight-label">Danh mục lớn nhất</div><div class="insight-value" id="topCategory">—</div></div>
-      </div>
-      <div class="compare-row" id="compareRow" style="display:none">
-        <div class="compare-label">So với kỳ trước</div>
-        <div class="compare-value" id="compareValue">—</div>
-      </div>
-      <div class="section-head" style="margin-top:22px;margin-bottom:8px">
-        <div class="section-title">Xu hướng chi</div>
-      </div>
-      <div id="trend" class="trend"></div>
+      <div id="selectedDayList"></div>
     </div>
-  </section>
+  </div>
 
-  <section class="transactions">
-    <div class="section-head">
-      <div class="section-title">Giao dịch trong kỳ đang xem</div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="export-btn" onclick="exportCsv()">⬇ Xuất CSV</button>
-        <div class="section-meta" id="listMeta">0 giao dịch</div>
+  <!-- CHẾ ĐỘ 2: DANH SÁCH GIAO DỊCH TRONG THÁNG -->
+  <div id="viewList" class="view-card" style="display:none">
+    <div class="filter-bar">
+      <input id="searchInput" class="input-field" style="flex:1;min-width:200px"
+             placeholder="Tìm theo nội dung hoặc danh mục..." oninput="renderListView()">
+      <select id="categorySelect" class="input-field" onchange="renderListView()">
+        <option value="">Tất cả danh mục</option>
+      </select>
+    </div>
+    <div id="fullMonthList"></div>
+  </div>
+
+  <!-- CHẾ ĐỘ 3: THỐNG KÊ THÁNG -->
+  <div id="viewStats" class="view-card" style="display:none">
+    <div class="stats-grid">
+      <div>
+        <div style="font-weight:800;font-size:15px;margin-bottom:12px">Chi tiêu theo danh mục</div>
+        <div id="categoryBreakdown"></div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <div class="kpi-label">TRUNG BÌNH CHI / NGÀY</div>
+          <div class="kpi-val" id="statAvgDay">0 ₫</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">KHOẢN CHI LỚN NHẤT</div>
+          <div class="kpi-val" id="statMaxExpense">0 ₫</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">SỐ GIAO DỊCH THÁNG</div>
+          <div class="kpi-val" id="statTxCount">0</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">CHÊNH LỆCH THU - CHI</div>
+          <div class="kpi-val" id="statNetMonth">0 ₫</div>
+        </div>
       </div>
     </div>
-    <div class="search-row">
-      <input type="text" id="searchInput" class="filter-input search-input" placeholder="Tìm theo nội dung hoặc danh mục…" oninput="render()">
-      <div class="category-chip" id="categoryFilterChip" style="display:none"></div>
+  </div>
+
+</div>
+
+<!-- MODAL SỬA GIAO DỊCH -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target.id==='editModal') closeEditModal()">
+  <form class="modal" onsubmit="event.preventDefault(); saveEdit();">
+    <div class="modal-title">Sửa giao dịch</div>
+    <div class="field">
+      <label>Loại giao dịch</label>
+      <div class="type-switch">
+        <button type="button" class="type-opt chi" id="btnTypeChi" onclick="setEditType('Chi')">Chi tiêu</button>
+        <button type="button" class="type-opt thu" id="btnTypeThu" onclick="setEditType('Thu')">Thu nhập</button>
+      </div>
     </div>
-    <div id="transactions">
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:60%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:35%"></div></div></div>
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:45%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:30%"></div></div></div>
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:25%"></div></div></div>
+    <div class="field">
+      <label>Số tiền (₫)</label>
+      <input type="number" id="editAmount" class="input-field" min="1" step="any" required>
     </div>
-  </section>
+    <div class="field">
+      <label>Danh mục</label>
+      <select id="editCategory" class="input-field"></select>
+    </div>
+    <div class="field">
+      <label>Nội dung</label>
+      <input type="text" id="editNote" class="input-field" required>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" onclick="closeEditModal()">Hủy (Esc)</button>
+      <button type="submit" id="saveEditBtn" class="btn-primary">Lưu thay đổi</button>
+    </div>
+  </form>
 </div>
 
 <div id="toast" class="toast"></div>
 
-<div class="modal-overlay" id="editModal">
-  <div class="modal">
-    <div class="modal-title">Sửa giao dịch</div>
-    <div class="modal-field">
-      <label>Loại</label>
-      <div class="type-toggle">
-        <button type="button" class="type-btn" id="editTypeChi" onclick="setEditType('Chi')">Chi</button>
-        <button type="button" class="type-btn" id="editTypeThu" onclick="setEditType('Thu')">Thu</button>
-      </div>
-    </div>
-    <div class="modal-field">
-      <label>Số tiền (₫)</label>
-      <input type="number" id="editAmount" class="filter-input" min="0" step="1000">
-    </div>
-    <div class="modal-field">
-      <label>Danh mục</label>
-      <select id="editCategory" class="filter-input"></select>
-    </div>
-    <div class="modal-field">
-      <label>Nội dung</label>
-      <input type="text" id="editNote" class="filter-input">
-    </div>
-    <div class="modal-actions">
-      <button class="cancel-btn" onclick="closeEditModal()">Hủy</button>
-      <button class="apply-btn" onclick="saveEdit()">Lưu thay đổi</button>
-    </div>
-  </div>
-</div>
-
 <script>
 'use strict';
 
-// Hợp nhất biểu tượng và màu sắc danh mục trong 1 bảng cấu hình duy nhất
 const CATEGORY_MAP = {
-  'Ăn uống': { icon: '🍜', bg: '#fff1e6', fg: '#c2540c' },
-  'Cà phê & đồ uống': { icon: '☕', bg: '#f4ebe0', fg: '#8a5a2b' },
-  'Di chuyển': { icon: '🚗', bg: '#e8f0fe', fg: '#2a5cb8' },
-  'Nhà ở': { icon: '🏠', bg: '#eef6ee', fg: '#2f7d3a' },
-  'Hóa đơn': { icon: '🧾', bg: '#fef2f2', fg: '#c23d3d' },
-  'Sức khỏe': { icon: '💊', bg: '#fdecf3', fg: '#c23d7a' },
-  'Mua sắm': { icon: '🛍️', bg: '#f3ecfd', fg: '#7440c2' },
-  'Học tập': { icon: '📚', bg: '#eaf6fb', fg: '#1f7a99' },
-  'Giải trí': { icon: '🎮', bg: '#fef8e6', fg: '#b8860b' },
-  'Gia đình': { icon: '👨‍👩‍👧', bg: '#eef2fb', fg: '#3c53a3' },
-  'Đầu tư': { icon: '📈', bg: '#e9faf1', fg: '#0f8a52' },
-  'Quà tặng': { icon: '🎁', bg: '#fdecec', fg: '#c23d3d' },
-  'Lương': { icon: '💰', bg: '#e6f6f0', fg: '#15966a' },
-  'Thưởng': { icon: '🎉', bg: '#fff6e0', fg: '#b8860b' },
-  'Thu nhập khác': { icon: '💵', bg: '#e6f6f0', fg: '#15966a' },
-  'Khác': { icon: '💸', bg: '#f1f5fa', fg: '#657083' }
+  'Ăn uống': { icon: '🍜', color: '#f97316' },
+  'Cà phê & đồ uống': { icon: '☕', color: '#d97706' },
+  'Di chuyển': { icon: '🚗', color: '#3b82f6' },
+  'Nhà ở': { icon: '🏠', color: '#22c55e' },
+  'Hóa đơn': { icon: '🧾', color: '#ef4444' },
+  'Sức khỏe': { icon: '💊', color: '#ec4899' },
+  'Mua sắm': { icon: '🛍️', color: '#a855f7' },
+  'Học tập': { icon: '📚', color: '#06b6d4' },
+  'Giải trí': { icon: '🎮', color: '#eab308' },
+  'Gia đình': { icon: '👨‍👩‍👧', color: '#6366f1' },
+  'Đầu tư': { icon: '📈', color: '#10b981' },
+  'Quà tặng': { icon: '🎁', color: '#f43f5e' },
+  'Lương': { icon: '💰', color: '#10b981' },
+  'Thưởng': { icon: '🎉', color: '#f59e0b' },
+  'Thu nhập khác': { icon: '💵', color: '#34d399' },
+  'Khác': { icon: '💸', color: '#94a3b8' }
 };
 
 const EXPENSE_CATEGORIES = ['Ăn uống','Cà phê & đồ uống','Di chuyển','Nhà ở','Hóa đơn','Sức khỏe','Mua sắm','Học tập','Giải trí','Gia đình','Đầu tư','Quà tặng','Khác'];
 const INCOME_CATEGORIES = ['Lương','Thưởng','Thu nhập khác','Đầu tư'];
-const MONTH_NAMES = ['Th1','Th2','Th3','Th4','Th5','Th6','Th7','Th8','Th9','Th10','Th11','Th12'];
-const SYNC_CHUNK_SIZE = 3000;
+const WEEKDAYS_FULL = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
 
-// Singleton formatters dùng chung, ngăn chặn khởi tạo lặp đi lặp lại trong vòng lặp
-const NF_VI = new Intl.NumberFormat('vi-VN');
-const DF_DATE = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-const DF_TIME = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+const NF = new Intl.NumberFormat('vi-VN');
+const DF_TIME = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' });
 
-let currentData = [];
-let lastSummary = null;
-let periodCache = {};      // periodKey -> transaction[]
-let period = 'today';
-let selectedMonth = null;  // 'YYYY-MM'
-let rangeStart = null;     // Date
-let rangeEnd = null;       // Date
-let categoryFilter = null; // string | null
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
+let selectedDateKey = toDateKey(new Date());
+let currentView = 'calendar';
+
+let monthTransactions = [];
+let monthCache = Object.create(null);
+let activeRequestId = 0;
 let editingId = null;
 let editingType = 'Chi';
-let loadingPeriod = false;
-let loaded = false;
 let toastTimer = null;
 
-function toDateInputValue(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth()+1).padStart(2,'0');
-  const d = String(date.getDate()).padStart(2,'0');
-  return `${y}-${m}-${d}`;
+function toDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function formatMoney(value) {
-  return NF_VI.format(Number(value) || 0) + ' ₫';
+function formatMoney(v) {
+  return NF.format(Math.round(Number(v) || 0)) + ' ₫';
 }
 
-function formatDate(date) {
-  return DF_DATE.format(date);
+function formatCompact(v) {
+  const n = Math.abs(Number(v) || 0);
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'tỷ';
+  if (n >= 1e6) return (n / 1e6).toFixed(n % 1e6 === 0 ? 0 : 1).replace(/\.0$/, '') + 'tr';
+  if (n >= 1e3) return Math.round(n / 1e3) + 'k';
+  return n + 'đ';
 }
 
-function formatTime(date) {
-  return DF_TIME.format(date);
+function getCatInfo(cat) {
+  return CATEGORY_MAP[cat] || CATEGORY_MAP['Khác'];
 }
 
-function categoryIcon(category, type) {
-  const info = CATEGORY_MAP[category] || CATEGORY_MAP['Khác'];
-  return info.icon || (type === 'Thu' ? '💵' : '💸');
+function switchView(view) {
+  currentView = view;
+  document.getElementById('tabCalendar').classList.toggle('active', view === 'calendar');
+  document.getElementById('tabList').classList.toggle('active', view === 'list');
+  document.getElementById('tabStats').classList.toggle('active', view === 'stats');
+
+  document.getElementById('viewCalendar').style.display = view === 'calendar' ? 'block' : 'none';
+  document.getElementById('viewList').style.display = view === 'list' ? 'block' : 'none';
+  document.getElementById('viewStats').style.display = view === 'stats' ? 'block' : 'none';
+  renderAll();
 }
 
-function categoryStyle(category) {
-  return CATEGORY_MAP[category] || CATEGORY_MAP['Khác'];
-}
+function changeMonth(delta) {
+  const d = new Date(viewYear, viewMonth + delta, 1);
+  viewYear = d.getFullYear();
+  viewMonth = d.getMonth();
 
-function setBusy(busy) {
-  document.getElementById('input').disabled = busy;
-  document.getElementById('spinner').classList.toggle('show', busy);
-}
-
-function computeBounds(p) {
-  const now = new Date();
-  let start = new Date(now);
-  let end = null;
-
-  if (p === 'today') {
-    start.setHours(0,0,0,0);
-  } else if (p === 'week') {
-    const day = start.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    start.setDate(start.getDate() + diff);
-    start.setHours(0,0,0,0);
-  } else if (p === 'month') {
-    start = new Date(now.getFullYear(), now.getMonth(), 1);
-  } else if (p === 'pickMonth') {
-    if (!selectedMonth) return null;
-    const [y,m] = selectedMonth.split('-').map(Number);
-    start = new Date(y, m-1, 1);
-    end = new Date(y, m, 1);
-  } else if (p === 'range') {
-    if (!rangeStart || !rangeEnd) return null;
-    start = rangeStart;
-    end = new Date(rangeEnd.getTime());
-    end.setDate(end.getDate() + 1);
-    end.setHours(0,0,0,0);
-  } else if (p === 'all') {
-    return { start: null, end: null, key: 'all' };
+  const today = new Date();
+  if (viewYear === today.getFullYear() && viewMonth === today.getMonth()) {
+    selectedDateKey = toDateKey(today);
   } else {
-    return null;
+    selectedDateKey = toDateKey(new Date(viewYear, viewMonth, 1));
   }
-
-  const key = `${p}:${toDateInputValue(start)}:${end ? toDateInputValue(end) : 'open'}`;
-  return { start, end, key };
+  loadMonthData(false);
 }
 
-function computePreviousBounds(p) {
+function goToday() {
   const now = new Date();
-  let start, end;
-
-  if (p === 'today') {
-    start = new Date(now); start.setDate(start.getDate()-1); start.setHours(0,0,0,0);
-    end = new Date(start); end.setDate(end.getDate()+1);
-  } else if (p === 'week') {
-    const day = now.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    const curStart = new Date(now); curStart.setDate(curStart.getDate()+diff); curStart.setHours(0,0,0,0);
-    start = new Date(curStart); start.setDate(start.getDate()-7);
-    end = curStart;
-  } else if (p === 'month') {
-    const curStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    start = new Date(curStart.getFullYear(), curStart.getMonth()-1, 1);
-    end = curStart;
-  } else if (p === 'pickMonth') {
-    if (!selectedMonth) return null;
-    const [y,m] = selectedMonth.split('-').map(Number);
-    start = new Date(y, m-2, 1);
-    end = new Date(y, m-1, 1);
-  } else if (p === 'range') {
-    if (!rangeStart || !rangeEnd) return null;
-    const days = Math.round((rangeEnd - rangeStart) / 86400000) + 1;
-    end = new Date(rangeStart);
-    start = new Date(rangeStart);
-    start.setDate(start.getDate() - days);
-  } else {
-    return null; // 'all' has no meaningful previous period
-  }
-
-  return { start, end };
+  viewYear = now.getFullYear();
+  viewMonth = now.getMonth();
+  selectedDateKey = toDateKey(now);
+  loadMonthData(false);
 }
 
-function withinBounds(date, bounds) {
-  if (bounds.start && date < bounds.start) return false;
-  if (bounds.end && date >= bounds.end) return false;
-  return true;
-}
+function manualRefresh() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  const key = `${viewYear}-${viewMonth}`;
+  delete monthCache[key];
 
-function getPeriodLabel() {
-  if (period === 'today') return formatDate(new Date());
-  if (period === 'week') return 'Tuần này';
-  if (period === 'month') return `Tháng ${new Date().getMonth()+1}/${new Date().getFullYear()}`;
-  if (period === 'all') return 'Toàn bộ thời gian';
-  if (period === 'pickMonth' && selectedMonth) {
-    const [y,m] = selectedMonth.split('-').map(Number);
-    return `${MONTH_NAMES[m-1]} ${y}`;
-  }
-  if (period === 'range' && rangeStart && rangeEnd) {
-    return `${formatDate(rangeStart)} → ${formatDate(rangeEnd)}`;
-  }
-  return 'Theo bộ lọc';
+  google.script.run
+    .withSuccessHandler(res => {
+      if (res) document.getElementById('totalBalance').textContent = formatMoney(res.balance);
+    })
+    .recalculateBalance();
+
+  loadMonthData(true, () => btn.classList.remove('spinning'));
 }
 
 function loadBalance() {
   google.script.run
-    .withSuccessHandler(result => {
-      const balance = result || { income: 0, expense: 0, balance: 0 };
-      document.getElementById('balance').textContent = formatMoney(balance.balance);
+    .withSuccessHandler(res => {
+      if (res) document.getElementById('totalBalance').textContent = formatMoney(res.balance);
     })
-    .withFailureHandler(() => { /* leave last known value on screen */ })
     .getBalance();
 }
 
-function toggleSyncIndicator(show) {
-  const dot = document.getElementById('syncDot');
-  const progress = document.getElementById('syncProgress');
-  if (dot) dot.style.display = show ? 'inline-block' : 'none';
-  if (progress) progress.style.display = show ? 'inline-block' : 'none';
-  if (!show && progress) progress.textContent = '';
-}
+function loadMonthData(force, onDone) {
+  document.getElementById('monthLabel').textContent = `Tháng ${String(viewMonth + 1).padStart(2, '0')} / ${viewYear}`;
+  const cacheKey = `${viewYear}-${viewMonth}`;
 
-function setPanelsLoading(isLoading) {
-  document.getElementById('categoryPanel').classList.toggle('loading', isLoading);
-  document.getElementById('insightPanel').classList.toggle('loading', isLoading);
-}
-function ensurePeriodLoaded(forceRefresh) {
-  const bounds = computeBounds(period);
-
-  if (!bounds) {
-    currentData = [];
-    loaded = true;
-    render();
+  if (!force && monthCache[cacheKey]) {
+    monthTransactions = monthCache[cacheKey];
+    populateCategoryFilter();
+    renderAll();
+    if (onDone) onDone();
     return;
   }
 
-  if (!forceRefresh && periodCache[bounds.key]) {
-    currentData = periodCache[bounds.key];
-    loaded = true;
-    render();
-    loadPreviousPeriodComparison();
-    return;
-  }
+  const requestId = ++activeRequestId;
+  const calCard = document.getElementById('calendarCard');
+  if (calCard) calCard.classList.add('is-loading');
 
-  loadingPeriod = true;
-  setPanelsLoading(true);
-  if (!loaded) {
-  }
-  render();
-
-  if (period === 'all') {
-    toggleSyncIndicator(true);
-    fetchAllChunked_(bounds.key);
-    return;
-  }
-
-  const startIso = bounds.start ? bounds.start.toISOString() : null;
-  const endIso = bounds.end ? bounds.end.toISOString() : null;
+  const start = new Date(viewYear, viewMonth, 1, 0, 0, 0);
+  const end = new Date(viewYear, viewMonth + 1, 1, 0, 0, 0);
 
   google.script.run
     .withSuccessHandler(rows => {
       const list = Array.isArray(rows) ? rows : [];
-      periodCache[bounds.key] = list;
-      currentData = list;
-      loaded = true;
-      loadingPeriod = false;
-      setPanelsLoading(false);
-      render();
-      loadPreviousPeriodComparison();
+      monthCache[cacheKey] = list;
+      // Chống Race Condition: Bỏ qua nếu người dùng đã chuyển sang tháng khác
+      if (requestId !== activeRequestId) return;
+      if (calCard) calCard.classList.remove('is-loading');
+      monthTransactions = list;
+      populateCategoryFilter();
+      renderAll();
+      if (onDone) onDone();
     })
-    .withFailureHandler(error => {
-      loadingPeriod = false;
-      setPanelsLoading(false);
-      loaded = true;
-      showToast(error.message || 'Không tải được dữ liệu', true);
-      render();
+    .withFailureHandler(err => {
+      if (requestId !== activeRequestId) return;
+      if (calCard) calCard.classList.remove('is-loading');
+      showToast(err.message || 'Không tải được dữ liệu tháng', true);
+      if (onDone) onDone();
     })
-    .getTransactionsInRange(startIso, endIso);
+    .getTransactionsInRange(start.toISOString(), end.toISOString());
 }
-function fetchAllChunked_(cacheKey, offset, accumulated, onDone) {
-  offset = offset || 0;
-  accumulated = accumulated || [];
+
+function submitQuickInput() {
+  const input = document.getElementById('quickInput');
+  const btn = document.getElementById('quickBtn');
+  const text = input.value.trim();
+  if (!text || btn.disabled) return;
+
+  input.disabled = true;
+  btn.disabled = true;
 
   google.script.run
     .withSuccessHandler(res => {
-      const rows = (res && res.rows) || [];
-      const total = (res && res.total) || 0;
-      const merged = accumulated.concat(rows);
-      const done = rows.length === 0 || merged.length >= total;
-
-      if (!done) {
-        const progress = document.getElementById('syncProgress');
-        if (progress) {
-          progress.textContent = `Đang tải ${merged.length.toLocaleString('vi-VN')}/${total.toLocaleString('vi-VN')}`;
-        }
-        fetchAllChunked_(cacheKey, offset + rows.length, merged, onDone);
-        return;
-      }
-
-      periodCache[cacheKey] = merged;
-      currentData = merged;
-      loaded = true;
-      loadingPeriod = false;
-      setPanelsLoading(false);
-      toggleSyncIndicator(false);
-      render();
-      if (onDone) onDone();
-    })
-    .withFailureHandler(() => {
-      loadingPeriod = false;
-      setPanelsLoading(false);
-      toggleSyncIndicator(false);
-      showToast('Không tải được toàn bộ dữ liệu', true);
-      render();
-    })
-    .getTransactionsChunk(offset, SYNC_CHUNK_SIZE);
-}
-
-function loadPreviousPeriodComparison() {
-  const compareRow = document.getElementById('compareRow');
-  const prevBounds = computePreviousBounds(period);
-
-  if (!prevBounds) {
-    compareRow.style.display = 'none';
-    return;
-  }
-
-  const startIso = prevBounds.start ? prevBounds.start.toISOString() : null;
-  const endIso = prevBounds.end ? prevBounds.end.toISOString() : null;
-
-  google.script.run
-    .withSuccessHandler(result => renderComparison(result ? result.expense : 0))
-    .withFailureHandler(() => { compareRow.style.display = 'none'; })
-    .getExpenseSumInRange(startIso, endIso);
-}
-
-function renderComparison(prevExpense) {
-  const compareRow = document.getElementById('compareRow');
-  const compareValue = document.getElementById('compareValue');
-  const summary = lastSummary || summarize(currentData);
-
-  compareRow.style.display = 'flex';
-
-  if (prevExpense === 0 && summary.expense === 0) {
-    compareValue.textContent = 'Chưa có dữ liệu';
-    compareValue.className = 'compare-value flat';
-  } else if (prevExpense === 0) {
-    compareValue.textContent = `▲ Mới phát sinh · ${formatMoney(summary.expense)}`;
-    compareValue.className = 'compare-value up';
-  } else {
-    const diff = summary.expense - prevExpense;
-    const pct = Math.round(Math.abs(diff) / prevExpense * 100);
-    const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '■';
-    const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
-    compareValue.textContent = `${arrow} ${pct}% (${formatMoney(Math.abs(diff))})`;
-    compareValue.className = `compare-value ${cls}`;
-  }
-}
-function manualRefresh() {
-  const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  
-  google.script.run
-    .withSuccessHandler(result => {
-      const balance = result || { income: 0, expense: 0, balance: 0 };
-      document.getElementById('balance').textContent = formatMoney(balance.balance);
-    })
-    .withFailureHandler(() => {
-      loadBalance();
-    })
-    .recalculateBalance();
-
-  const bounds = computeBounds(period);
-  if (bounds) delete periodCache[bounds.key];
-  ensurePeriodLoaded(true);
-  setTimeout(() => btn.classList.remove('spinning'), 700);
-}
-
-function handleInput(event) {
-  if (event.key === 'Escape') {
-    event.target.value = '';
-    return;
-  }
-  if (event.key !== 'Enter') return;
-
-  const input = document.getElementById('input');
-  const value = input.value.trim();
-  if (!value) return;
-
-  setBusy(true);
-
-  google.script.run
-    .withSuccessHandler(result => {
       input.value = '';
-      setBusy(false);
-      showToast(`${result.type} · ${formatMoney(result.amount)} · ${result.category || 'Khác'}`);
-      ['today','week','month','all'].forEach(p => {
-        const b = computeBounds(p);
-        if (b) delete periodCache[b.key];
-      });
+      input.disabled = false;
+      btn.disabled = false;
+      showToast(`Đã lưu: ${res.type} ${formatMoney(res.amount)} (${res.category})`);
 
-      const bounds = computeBounds(period);
-      if (bounds && withinBounds(new Date(result.timestamp), bounds)) {
-        currentData.push(result);
-        periodCache[bounds.key] = currentData;
+      const d = new Date(res.timestamp);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+
+      if (d.getFullYear() === viewYear && d.getMonth() === viewMonth) {
+        monthTransactions = [...monthTransactions, res];
+        monthCache[key] = monthTransactions;
+        selectedDateKey = toDateKey(d);
+        populateCategoryFilter();
+        renderAll();
+      } else {
+        delete monthCache[key];
       }
-
       loadBalance();
-      render();
       input.focus();
     })
-    .withFailureHandler(error => {
-      setBusy(false);
-      showToast(error.message || 'Có lỗi xảy ra', true);
+    .withFailureHandler(err => {
+      input.disabled = false;
+      btn.disabled = false;
+      showToast(err.message || 'Không thể lưu giao dịch', true);
       input.focus();
     })
-    .addTransaction(value);
+    .addTransaction(text);
 }
 
-function deleteTransaction(id, note) {
-  const index = currentData.findIndex(item => item.id === id);
-  if (index === -1) return;
+function renderAll() {
+  let income = 0, expense = 0;
+  monthTransactions.forEach(t => {
+    const amt = Number(t.amount) || 0;
+    if (t.type === 'Thu') income += amt; else expense += amt;
+  });
 
-  const removed = currentData[index];
-  const row = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
-  if (row) row.classList.add('removing');
+  document.getElementById('monthIncome').textContent = (income > 0 ? '+' : '') + formatMoney(income);
+  document.getElementById('monthExpense').textContent = (expense > 0 ? '-' : '') + formatMoney(expense);
 
-  currentData.splice(index, 1);
-  render();
+  renderCalendarGrid();
+  renderSelectedDayDetail();
+  if (currentView === 'list') renderListView();
+  if (currentView === 'stats') renderStatsView(income, expense);
+}
+
+function renderCalendarGrid() {
+  const grid = document.getElementById('calendarGrid');
+  const byDay = Object.create(null);
+
+  monthTransactions.forEach(t => {
+    const d = new Date(t.timestamp);
+    if (isNaN(d.getTime())) return;
+    const k = toDateKey(d);
+    if (!byDay[k]) byDay[k] = { income: 0, expense: 0, count: 0 };
+    const amt = Number(t.amount) || 0;
+    if (t.type === 'Thu') byDay[k].income += amt; else byDay[k].expense += amt;
+    byDay[k].count++;
+  });
+
+  const firstDay = new Date(viewYear, viewMonth, 1);
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const startOffset = (firstDay.getDay() + 6) % 7; // Thứ 2 = 0 ... CN = 6
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+  const gridStartDate = new Date(viewYear, viewMonth, 1 - startOffset);
+  const todayKey = toDateKey(new Date());
+
+  const cellsHtml = [];
+  for (let i = 0; i < totalCells; i++) {
+    const cellDate = new Date(gridStartDate.getFullYear(), gridStartDate.getMonth(), gridStartDate.getDate() + i);
+    const key = toDateKey(cellDate);
+    const isCurrentMonth = cellDate.getMonth() === viewMonth;
+    const isToday = key === todayKey;
+    const isSelected = key === selectedDateKey;
+    const data = byDay[key];
+
+    const classes = ['cal-cell'];
+    if (!isCurrentMonth) classes.push('other-month');
+    if (isToday) classes.push('today');
+    if (isSelected) classes.push('selected');
+
+    let pillsHtml = '';
+    if (data) {
+      const pills = [];
+      if (data.expense > 0) {
+        pills.push(`<div class="day-pill chi"><span class="dot"></span>-${formatCompact(data.expense)}</div>`);
+      }
+      if (data.income > 0) {
+        pills.push(`<div class="day-pill thu"><span class="dot"></span>+${formatCompact(data.income)}</div>`);
+      }
+      pillsHtml = `<div class="cell-pills">${pills.join('')}</div>`;
+    }
+
+    cellsHtml.push(`
+      <div class="${classes.join(' ')}"
+           data-date-key="${key}"
+           data-year="${cellDate.getFullYear()}"
+           data-month="${cellDate.getMonth()}">
+        <div class="cell-top">
+          <span class="day-num">${cellDate.getDate()}</span>
+          ${data && data.count > 1 ? `<span class="cell-count">${data.count} mục</span>` : ''}
+        </div>
+        ${pillsHtml}
+      </div>
+    `);
+  }
+
+  grid.innerHTML = cellsHtml.join('');
+}
+
+function renderSelectedDayDetail() {
+  const [y, m, d] = selectedDateKey.split('-').map(Number);
+  const dateObj = new Date(y, m - 1, d);
+  const todayKey = toDateKey(new Date());
+
+  const titlePrefix = selectedDateKey === todayKey ? 'Hôm nay · ' : '';
+  document.getElementById('selectedDayTitle').textContent =
+    `${titlePrefix}${WEEKDAYS_FULL[dateObj.getDay()]}, ${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
+
+  const list = monthTransactions
+    .filter(t => toDateKey(new Date(t.timestamp)) === selectedDateKey)
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  let inc = 0, exp = 0;
+  list.forEach(t => {
+    const a = Number(t.amount) || 0;
+    if (t.type === 'Thu') inc += a; else exp += a;
+  });
+
+  document.getElementById('selectedDayTotals').innerHTML = [
+    inc ? `<span class="in">+${formatMoney(inc)}</span>` : '',
+    exp ? `<span class="out">-${formatMoney(exp)}</span>` : ''
+  ].join('') || '<span style="color:var(--muted);font-weight:600">0 ₫</span>';
+
+  const container = document.getElementById('selectedDayList');
+  if (!list.length) {
+    container.innerHTML = '<div class="empty">Chưa có giao dịch nào trong ngày này.</div>';
+    return;
+  }
+  container.innerHTML = list.map(renderTxRowHtml).join('');
+}
+
+function renderTxRowHtml(item) {
+  const d = new Date(item.timestamp);
+  const isThu = item.type === 'Thu';
+  const info = getCatInfo(item.category);
+  const dateStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} · ${DF_TIME.format(d)}`;
+  const safeId = escapeHtml(item.id);
+
+  return `
+    <div class="tx-row" data-tx-id="${safeId}">
+      <div class="tx-left" data-action="edit">
+        <div class="tx-icon" style="background:${info.color}22;color:${info.color}">${info.icon}</div>
+        <div style="min-width:0">
+          <div class="tx-note">${escapeHtml(item.note)}</div>
+          <div class="tx-meta">
+            <span>${dateStr}</span>
+            <span class="tx-tag">${escapeHtml(item.category || 'Khác')}</span>
+          </div>
+        </div>
+      </div>
+      <div class="tx-right">
+        <div class="tx-amount ${isThu ? 'thu' : 'chi'}">${isThu ? '+' : '-'}${formatMoney(item.amount)}</div>
+        <button type="button" class="act-btn" title="Sửa" data-action="edit">✎</button>
+        <button type="button" class="act-btn del" title="Xóa" data-action="delete">✕</button>
+      </div>
+    </div>`;
+}
+
+function populateCategoryFilter() {
+  const select = document.getElementById('categorySelect');
+  const current = select.value;
+  const cats = [...new Set(monthTransactions.map(t => t.category).filter(Boolean))];
+  select.innerHTML = '<option value="">Tất cả danh mục</option>' +
+    cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  if (cats.includes(current)) select.value = current;
+}
+
+function renderListView() {
+  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  const cat = document.getElementById('categorySelect').value;
+
+  const filtered = monthTransactions
+    .filter(t => (!cat || t.category === cat) &&
+      (!q || (t.note || '').toLowerCase().includes(q) || (t.category || '').toLowerCase().includes(q)))
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  const container = document.getElementById('fullMonthList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty">Không tìm thấy giao dịch phù hợp trong tháng này.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(renderTxRowHtml).join('');
+}
+
+function renderStatsView(income, expense) {
+  const byCat = Object.create(null);
+  let maxExp = 0;
+  const activeDays = new Set();
+
+  monthTransactions.forEach(t => {
+    const amt = Number(t.amount) || 0;
+    if (t.type !== 'Thu') {
+      const c = t.category || 'Khác';
+      byCat[c] = (byCat[c] || 0) + amt;
+      if (amt > maxExp) maxExp = amt;
+      activeDays.add(toDateKey(new Date(t.timestamp)));
+    }
+  });
+
+  const entries = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+  const catContainer = document.getElementById('categoryBreakdown');
+
+  if (!entries.length) {
+    catContainer.innerHTML = '<div class="empty">Chưa có khoản chi nào trong tháng.</div>';
+  } else {
+    const topVal = entries[0][1] || 1;
+    catContainer.innerHTML = entries.map(([cat, amt]) => {
+      const info = getCatInfo(cat);
+      const pct = Math.max(4, Math.round((amt / topVal) * 100));
+      const share = expense > 0 ? Math.round((amt / expense) * 100) : 0;
+      return `
+        <div class="cat-row">
+          <div class="tx-icon" style="background:${info.color}22;color:${info.color}">${info.icon}</div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700">
+              <span>${escapeHtml(cat)}</span>
+              <span style="color:var(--muted-light);font-size:11.5px">${share}%</span>
+            </div>
+            <div class="cat-bar"><div class="cat-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div style="font-size:13px;font-weight:800">${formatMoney(amt)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  const daysCount = Math.max(activeDays.size, 1);
+  document.getElementById('statAvgDay').textContent = formatMoney(expense / daysCount);
+  document.getElementById('statMaxExpense').textContent = formatMoney(maxExp);
+  document.getElementById('statTxCount').textContent = monthTransactions.length;
+
+  const net = income - expense;
+  const netEl = document.getElementById('statNetMonth');
+  netEl.textContent = (net >= 0 ? '+' : '-') + formatMoney(Math.abs(net));
+  netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+function removeTx(id) {
+  const idx = monthTransactions.findIndex(t => t.id === id);
+  if (idx === -1) return;
+  const backup = monthTransactions[idx];
+  const cacheKey = `${viewYear}-${viewMonth}`;
+
+  monthTransactions = monthTransactions.filter(t => t.id !== id);
+  monthCache[cacheKey] = monthTransactions;
+  renderAll();
 
   google.script.run
-    .withSuccessHandler(result => {
-      if (!result || !result.success) {
-        currentData.splice(index, 0, removed);
-        render();
+    .withSuccessHandler(res => {
+      if (!res || !res.success) {
+        monthTransactions.splice(idx, 0, backup);
+        monthCache[cacheKey] = monthTransactions;
+        renderAll();
         showToast('Không xóa được giao dịch', true);
         return;
       }
-      invalidateOtherPeriods_();
       loadBalance();
-      showToast(`Đã xóa "${note}"`);
+      showToast(`Đã xóa "${backup.note}"`);
     })
-    .withFailureHandler(error => {
-      currentData.splice(index, 0, removed);
-      render();
-      showToast(error.message || 'Không xóa được giao dịch', true);
+    .withFailureHandler(err => {
+      monthTransactions.splice(idx, 0, backup);
+      monthCache[cacheKey] = monthTransactions;
+      renderAll();
+      showToast(err.message || 'Lỗi khi xóa', true);
     })
     .deleteTransaction(id);
-}
-function invalidateOtherPeriods_() {
-  const bounds = computeBounds(period);
-  const keepKey = bounds ? bounds.key : null;
-  Object.keys(periodCache).forEach(k => {
-    if (k !== keepKey) delete periodCache[k];
-  });
-}
-
-function populateEditCategories() {
-  const select = document.getElementById('editCategory');
-  const list = editingType === 'Thu' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
-  select.innerHTML = list.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-}
-
-function updateTypeButtons() {
-  document.getElementById('editTypeChi').classList.toggle('active', editingType === 'Chi');
-  document.getElementById('editTypeThu').classList.toggle('active', editingType === 'Thu');
 }
 
 function setEditType(type) {
   editingType = type;
-  populateEditCategories();
-  updateTypeButtons();
+  document.getElementById('btnTypeChi').classList.toggle('active', type === 'Chi');
+  document.getElementById('btnTypeThu').classList.toggle('active', type === 'Thu');
+  const list = type === 'Thu' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  document.getElementById('editCategory').innerHTML =
+    list.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 }
 
 function openEditModal(id) {
-  const item = currentData.find(d => d.id === id);
+  const item = monthTransactions.find(t => t.id === id);
   if (!item) return;
-
   editingId = id;
-  editingType = item.type === 'Thu' ? 'Thu' : 'Chi';
-
-  populateEditCategories();
-  updateTypeButtons();
-
+  setEditType(item.type === 'Thu' ? 'Thu' : 'Chi');
   document.getElementById('editAmount').value = item.amount;
   document.getElementById('editNote').value = item.note;
-
-  const select = document.getElementById('editCategory');
-  if ([...select.options].some(opt => opt.value === item.category)) {
-    select.value = item.category;
-  }
-
+  document.getElementById('editCategory').value = item.category;
   document.getElementById('editModal').classList.add('show');
+  document.getElementById('editAmount').focus();
 }
 
 function closeEditModal() {
@@ -1113,391 +1254,119 @@ function closeEditModal() {
 
 function saveEdit() {
   if (!editingId) return;
+  const saveBtn = document.getElementById('saveEditBtn');
+  if (saveBtn.disabled) return;
 
   const amount = Number(document.getElementById('editAmount').value);
   const category = document.getElementById('editCategory').value;
   const note = document.getElementById('editNote').value.trim();
 
-  if (!isFinite(amount) || amount <= 0) {
-    showToast('Số tiền không hợp lệ', true);
-    return;
-  }
-  if (!note) {
-    showToast('Nội dung không được để trống', true);
-    return;
-  }
+  if (!amount || amount <= 0) return showToast('Số tiền không hợp lệ', true);
+  if (!note) return showToast('Vui lòng nhập nội dung', true);
 
   const id = editingId;
-  const updates = { type: editingType, amount: Math.round(amount), category, note };
+  const cacheKey = `${viewYear}-${viewMonth}`;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Đang lưu...';
 
   google.script.run
-    .withSuccessHandler(result => {
-      const idx = currentData.findIndex(d => d.id === id);
-      if (idx !== -1) currentData[idx] = result;
+    .withSuccessHandler(updated => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Lưu thay đổi';
+      monthTransactions = monthTransactions.map(t => t.id === id ? updated : t);
+      monthCache[cacheKey] = monthTransactions;
       closeEditModal();
-      invalidateOtherPeriods_();
       loadBalance();
-      render();
+      populateCategoryFilter();
+      renderAll();
       showToast('Đã cập nhật giao dịch');
     })
-    .withFailureHandler(error => {
-      showToast(error.message || 'Không cập nhật được giao dịch', true);
+    .withFailureHandler(err => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Lưu thay đổi';
+      showToast(err.message || 'Lỗi cập nhật', true);
     })
-    .updateTransaction(id, updates);
-}
-
-function summarize(items) {
-  const result = {
-    income:0, expense:0, expenseCount:0, maxExpense:0,
-    byCategory:{}, daily:{}
-  };
-
-  items.forEach(item => {
-    const amount = Number(item.amount) || 0;
-    if (item.type === 'Thu') {
-      result.income += amount;
-    } else {
-      result.expense += amount;
-      result.expenseCount++;
-      result.maxExpense = Math.max(result.maxExpense, amount);
-      const category = item.category || 'Khác';
-      result.byCategory[category] = (result.byCategory[category] || 0) + amount;
-    }
-
-    const d = new Date(item.timestamp);
-    if (!isNaN(d.getTime())) {
-      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      if (!result.daily[key]) result.daily[key] = 0;
-      if (item.type !== 'Thu') result.daily[key] += amount;
-    }
-  });
-
-  return result;
-}
-
-function render() {
-  const summary = summarize(currentData);
-  lastSummary = summary;
-
-  document.getElementById('income').textContent = formatMoney(summary.income);
-  document.getElementById('expense').textContent = formatMoney(summary.expense);
-  document.getElementById('transactionCount').textContent = currentData.length.toLocaleString('vi-VN');
-
-  if (period === 'today') {
-    document.getElementById('todayExpense').textContent = formatMoney(summary.expense);
-  }
-
-  const label = getPeriodLabel();
-  document.getElementById('periodMeta').textContent = label;
-  const periodLabelEl = document.getElementById('periodLabel');
-  if (periodLabelEl) periodLabelEl.textContent = label;
-
-  renderInsights(summary);
-  renderCategories(summary);
-  renderTrend(summary);
-  renderCategoryChip();
-  renderTransactions();
-}
-
-function renderInsights(summary) {
-  const uniqueDays = new Set();
-  currentData.forEach(item => {
-    const d = new Date(item.timestamp);
-    if (!isNaN(d.getTime())) {
-      uniqueDays.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
-    }
-  });
-
-  const dayCount = Math.max(uniqueDays.size, 1);
-  document.getElementById('avgExpense').textContent = formatMoney(summary.expense / dayCount);
-  document.getElementById('expenseCount').textContent = summary.expenseCount.toLocaleString('vi-VN');
-  document.getElementById('maxExpense').textContent = formatMoney(summary.maxExpense);
-
-  const top = Object.entries(summary.byCategory).sort((a,b) => b[1] - a[1])[0];
-  document.getElementById('topCategory').textContent = top ? top[0] : '—';
-}
-
-function renderCategories(summary) {
-  const entries = Object.entries(summary.byCategory).sort((a,b) => b[1] - a[1]);
-  const container = document.getElementById('categoryList');
-
-  document.getElementById('categoryMeta').textContent = `${entries.length} danh mục`;
-
-  if (!entries.length) {
-    container.innerHTML = `<div class="empty">${loadingPeriod ? 'Đang tải…' : 'Chưa có dữ liệu chi tiêu.'}</div>`;
-    return;
-  }
-
-  const max = entries[0][1] || 1;
-
-  container.innerHTML = entries.slice(0, 10).map(([category, amount]) => {
-    const percent = Math.max(3, Math.round(amount / max * 100));
-    const style = categoryStyle(category);
-    const active = category === categoryFilter ? ' active' : '';
-    return `
-      <div class="category-row${active}" onclick="toggleCategoryFilter('${escapeJs(category)}')">
-        <div class="category-icon" style="background:${style.bg};color:${style.fg}">${categoryIcon(category, 'Chi')}</div>
-        <div>
-          <div class="category-name">${escapeHtml(category)}</div>
-          <div class="category-bar"><div class="category-fill" style="width:${percent}%"></div></div>
-        </div>
-        <div class="category-amount">${formatMoney(amount)}</div>
-      </div>`;
-  }).join('');
-}
-
-function renderTrend(summary) {
-  const container = document.getElementById('trend');
-  let limit = 7;
-  if (period === 'pickMonth' || period === 'range') limit = 31;
-  else if (period === 'all') limit = 30;
-  const entries = Object.entries(summary.daily).sort((a,b) => a[0].localeCompare(b[0])).slice(-limit);
-
-  if (!entries.length) {
-    container.innerHTML = `<div class="empty" style="width:100%">${loadingPeriod ? 'Đang tải…' : 'Chưa có dữ liệu xu hướng.'}</div>`;
-    return;
-  }
-
-  const max = Math.max(...entries.map(([,v]) => v), 1);
-
-  container.innerHTML = entries.map(([key, value]) => {
-    const [y,m,d] = key.split('-');
-    const height = Math.max(3, Math.round(value / max * 100));
-    return `
-      <div class="trend-col" title="${formatMoney(value)}">
-        <div class="trend-bar-wrap"><div class="trend-bar" style="height:${height}%"></div></div>
-        <div class="trend-label">${d}/${m}</div>
-      </div>`;
-  }).join('');
-}
-
-function toggleCategoryFilter(category) {
-  categoryFilter = categoryFilter === category ? null : category;
-  render();
-}
-
-function clearCategoryFilter() {
-  categoryFilter = null;
-  render();
-}
-
-function renderCategoryChip() {
-  const chip = document.getElementById('categoryFilterChip');
-  if (!categoryFilter) {
-    chip.style.display = 'none';
-    chip.innerHTML = '';
-    return;
-  }
-  chip.style.display = 'inline-flex';
-  chip.innerHTML = `${escapeHtml(categoryFilter)} <span onclick="clearCategoryFilter()">✕</span>`;
-}
-
-function getVisibleTransactions() {
-  let list = currentData;
-  if (categoryFilter) list = list.filter(item => item.category === categoryFilter);
-
-  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-  if (q) {
-    list = list.filter(item =>
-      (item.note || '').toLowerCase().includes(q) ||
-      (item.category || '').toLowerCase().includes(q)
-    );
-  }
-  return list;
-}
-
-function renderTransactions() {
-  const container = document.getElementById('transactions');
-
-  if (!loaded || loadingPeriod) {
-    container.innerHTML = `
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:60%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:35%"></div></div></div>
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:45%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:30%"></div></div></div>
-      <div class="skeleton-row"><div class="icon skeleton"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:25%"></div></div></div>`;
-    document.getElementById('listMeta').textContent = 'Đang tải…';
-    return;
-  }
-
-  const visible = getVisibleTransactions();
-  document.getElementById('listMeta').textContent = `${visible.length} giao dịch`;
-
-  if (!visible.length) {
-    container.innerHTML = '<div class="empty">Không có giao dịch phù hợp.</div>';
-    return;
-  }
-
-  const recent = [...visible]
-    .sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp))
-    .slice(0, 200);
-
-  container.innerHTML = recent.map(item => {
-    const date = new Date(item.timestamp);
-    const isIncome = item.type === 'Thu';
-    const cls = isIncome ? 'thu' : 'chi';
-    const sign = isIncome ? '+' : '-';
-    const safeNote = escapeHtml(item.note || '');
-    const safeCategory = escapeHtml(item.category || 'Khác');
-    const style = categoryStyle(item.category);
-
-    return `
-      <div class="transaction" data-id="${escapeHtml(item.id)}">
-        <div class="transaction-left" onclick="openEditModal('${escapeJs(item.id)}')">
-          <div class="icon" style="background:${style.bg};color:${style.fg}">${categoryIcon(item.category, item.type)}</div>
-          <div style="min-width:0">
-            <div class="note">${safeNote}</div>
-            <div class="meta">
-              <div class="time">${formatDate(date)} · ${formatTime(date)}</div>
-              <div class="tag">${safeCategory}</div>
-            </div>
-          </div>
-        </div>
-        <div class="transaction-right">
-          <div class="amount ${cls}">${sign}${formatMoney(item.amount)}</div>
-          <button class="icon-btn edit" title="Sửa giao dịch" onclick="openEditModal('${escapeJs(item.id)}')">✎</button>
-          <button class="icon-btn delete" title="Xóa giao dịch"
-                  onclick="deleteTransaction('${escapeJs(item.id)}','${escapeJs(item.note || '')}')">✕</button>
-        </div>
-      </div>`;
-  }).join('');
+    .updateTransaction(id, { type: editingType, amount: Math.round(amount), category, note });
 }
 
 function exportCsv() {
-  const list = getVisibleTransactions();
-
-  if (!list.length) {
-    showToast('Không có giao dịch để xuất', true);
-    return;
-  }
-
+  if (!monthTransactions.length) return showToast('Tháng này chưa có giao dịch để xuất', true);
   const header = ['Thời gian','Loại','Số tiền','Danh mục','Nội dung'];
-  const rows = [...list]
-    .sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp))
-    .map(item => {
-      const date = new Date(item.timestamp);
-      return [
-        `${formatDate(date)} ${formatTime(date)}`,
-        item.type,
-        item.amount,
-        item.category,
-        item.note || ''
-      ];
-    });
+  const rows = [...monthTransactions]
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+    .map(t => [new Date(t.timestamp).toLocaleString('vi-VN'), t.type, t.amount, t.category, t.note || '']);
 
   const csv = [header, ...rows]
-    .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
     .join('\r\n');
 
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `chi-tieu-${toDateInputValue(new Date())}.csv`;
-  document.body.appendChild(a);
+  a.download = `chi-tieu-${viewYear}-${String(viewMonth + 1).padStart(2, '0')}.csv`;
   a.click();
-  document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast(`Đã xuất ${list.length} giao dịch ra CSV`);
+  showToast(`Đã xuất ${monthTransactions.length} giao dịch`);
 }
 
-function setPeriod(value, button) {
-  period = value;
-  categoryFilter = null;
-  document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
-  button.classList.add('active');
-
-  const extra = document.getElementById('filterExtra');
-  const monthWrap = document.getElementById('monthPickerWrap');
-  const rangeWrap = document.getElementById('rangePickerWrap');
-
-  if (value === 'pickMonth') {
-    extra.style.display = 'flex';
-    monthWrap.style.display = 'flex';
-    rangeWrap.style.display = 'none';
-    if (!selectedMonth) {
-      const now = new Date();
-      selectedMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    }
-    document.getElementById('monthPicker').value = selectedMonth;
-  } else if (value === 'range') {
-    extra.style.display = 'flex';
-    monthWrap.style.display = 'none';
-    rangeWrap.style.display = 'flex';
-    if (!rangeStart || !rangeEnd) {
-      const now = new Date();
-      const from = new Date(now);
-      from.setDate(from.getDate() - 6);
-      from.setHours(0,0,0,0);
-      const to = new Date(now);
-      to.setHours(0,0,0,0);
-      rangeStart = from;
-      rangeEnd = to;
-    }
-    document.getElementById('rangeFrom').value = toDateInputValue(rangeStart);
-    document.getElementById('rangeTo').value = toDateInputValue(rangeEnd);
-  } else {
-    extra.style.display = 'none';
-  }
-
-  ensurePeriodLoaded();
-}
-
-function applyMonthFilter() {
-  const value = document.getElementById('monthPicker').value;
-  if (!value) return;
-  selectedMonth = value;
-  ensurePeriodLoaded();
-}
-
-function applyRangeFilter() {
-  const fromVal = document.getElementById('rangeFrom').value;
-  const toVal = document.getElementById('rangeTo').value;
-
-  if (!fromVal || !toVal) {
-    showToast('Vui lòng chọn đủ ngày bắt đầu và kết thúc', true);
-    return;
-  }
-
-  const from = new Date(fromVal + 'T00:00:00');
-  const to = new Date(toVal + 'T00:00:00');
-
-  if (from > to) {
-    showToast('Ngày bắt đầu phải trước ngày kết thúc', true);
-    return;
-  }
-
-  rangeStart = from;
-  rangeEnd = to;
-  ensurePeriodLoaded();
-}
-
-function showToast(message, isError) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.toggle('error', !!isError);
-  toast.classList.add('show');
-
+function showToast(msg, isErr) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.toggle('error', !!isErr);
+  el.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2300);
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = String(text ?? '');
-  return div.innerHTML;
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s ?? '');
+  return d.innerHTML;
 }
 
-function escapeJs(text) {
-  return String(text ?? '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' ');
-}
-
-document.getElementById('editModal').addEventListener('click', event => {
-  if (event.target.id === 'editModal') closeEditModal();
+// ===== EVENT DELEGATION CHUẨN SENIOR (KHÔNG DÙNG INLINE ONCLICK ĐỘNG) =====
+document.getElementById('calendarGrid').addEventListener('click', e => {
+  const cell = e.target.closest('.cal-cell');
+  if (!cell) return;
+  const key = cell.dataset.dateKey;
+  const y = Number(cell.dataset.year);
+  const m = Number(cell.dataset.month);
+  selectedDateKey = key;
+  if (y !== viewYear || m !== viewMonth) {
+    viewYear = y;
+    viewMonth = m;
+    loadMonthData(false);
+    return;
+  }
+  renderCalendarGrid();
+  renderSelectedDayDetail();
 });
 
-document.getElementById('today').textContent = formatDate(new Date());
-document.getElementById('input').focus();
+function handleTxListClick(e) {
+  const actionEl = e.target.closest('[data-action]');
+  if (!actionEl) return;
+  const row = actionEl.closest('[data-tx-id]');
+  if (!row) return;
+  const txId = row.dataset.txId;
+  if (actionEl.dataset.action === 'edit') {
+    openEditModal(txId);
+  } else if (actionEl.dataset.action === 'delete') {
+    removeTx(txId);
+  }
+}
+
+document.getElementById('selectedDayList').addEventListener('click', handleTxListClick);
+document.getElementById('fullMonthList').addEventListener('click', handleTxListClick);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('editModal').classList.contains('show')) {
+    closeEditModal();
+  }
+});
+
 loadBalance();
-ensurePeriodLoaded();
+loadMonthData(false);
 </script>
 </body>
 </html>
